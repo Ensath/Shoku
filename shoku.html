@@ -1,0 +1,71 @@
+<!--Code based on an assignment by Simon Niklaus-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0" />
+
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+		<script type="text/javascript" src="http://localhost:8080/socket.io/socket.io.js"></script>
+	</head>
+	<body>
+		<select id="clients"></select>
+		<input id="message" type="text" placeholder="message">
+		<input id="submit" type="button" value="submit">
+		<br>
+		<pre id="output"></pre>
+
+		<script type="text/javascript">
+			var socketHandle = io.connect('http://localhost:8080/');
+
+			var strIdent = '';
+
+			socketHandle.on('hello', function(data) {
+				strIdent = data.id;
+			});
+
+			socketHandle.on('clients', function(data) {
+				jQuery('#clients')
+					.empty()
+					.append(jQuery('<option></option>')
+						.val('everyone')
+						.text('everyone')
+					)
+					.each(function() {
+						for (var i = 0; i < data.array.length; i += 1) {
+							jQuery(this)
+								.append(jQuery('<option></option>')
+									.val(data.array[i])
+									.text(data.array[i])
+								)
+							;
+
+							if (data.array[i] === strIdent) {
+								jQuery(this).find('option').last()
+									.text(data.array[i] + ' - me')
+								;
+							}
+						}
+					})
+				;
+			});
+
+			socketHandle.on('message', function(data) {
+				jQuery('#output')
+					.prepend(data.from + ' to ' + data.to + ': ' + data.message + '\n')
+				;
+			});
+
+			jQuery('#submit')
+				.on('click', function() {
+					socketHandle.emit('message', {
+						'to': jQuery('#clients').val(),
+						'message': jQuery('#message').val()
+					});
+				})
+			;
+		</script>
+	</body>
+</html>
