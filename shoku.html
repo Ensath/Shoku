@@ -24,14 +24,19 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		    display: block;
 		    margin: auto;
 		  }
+		  .float {
+		    float:left;
+		  }
 		</style>
 	</head>
 	<body>
-		<img class="fit" src="res/gboard.jpeg">
-		<input id="message" type="text" placeholder="message">
-		<input id="submit" type="button" value="submit">
-		<br>
-		<pre id="output"></pre>
+		<img class="fit float" src="res/gboard.jpeg">
+		<div class="float">
+			<input id="message" type="text" placeholder="message">
+			<input id="submit" type="button" value="submit">
+			<br>
+			<pre id="output"></pre>
+		</div>
 
 		<script type="text/javascript">
 		  function set_body_height() { // set body height = window height
