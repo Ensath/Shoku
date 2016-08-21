@@ -36,10 +36,16 @@ io.on('connection', function(socketHandle) {
 	}
 	// send everyone the 'message' event, containing a message that a new client connected - example: { 'from':'server', 'to':'everyone', 'message':'9T1P4pUQ connected' }
 	for (var client in objectClients) {
+		var source = '';
+		if (socketHandle.id === objectClients[client].id) {
+			source = 'You';
+		} else {
+			source = 'Opponent';
+		}
 		objectClients[client].socket.emit('message', {
-			'from':'server',
+			'from':'Server',
 			'to':'everyone',
-			'message': socketHandle.id + ' connected'
+			'message': source + ' connected'
 		});
 	}
 
@@ -47,8 +53,14 @@ io.on('connection', function(socketHandle) {
 		// if the message should be recevied by everyone, broadcast it accordingly
 		if(objectData.to==='everyone'){
 			for (var client in objectClients) {
+				var source = '';
+				if (socketHandle.id === objectClients[client].id) {
+					source = 'You';
+				} else {
+					source = 'Opponent';
+				}
 				objectClients[client].socket.emit('message', {
-					'from':socketHandle.id,
+					'from':source,
 					'to':'everyone',
 					'message': objectData.message
 				});
@@ -84,9 +96,9 @@ io.on('connection', function(socketHandle) {
 		// send everyone the 'message' event, containing a message that an existing client disconnected - example: { 'from':'server', 'to':'everyone', 'message':'9T1P4pUQ disconnected' }
 		for (var client in objectClients) {
 			objectClients[client].socket.emit('message', {
-				'from':'server',
+				'from':'Server',
 				'to':'everyone',
-				'message': socketHandle.id + ' disconnected'
+				'message':'Opponent disconnected'
 			});
 		}
 	});
