@@ -29,8 +29,11 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		  .center {
 		    text-align: center;
 		  }
-		  .float {
+		  .floatl {
 		    float:left;
+		  }
+		  .floatr {
+		    float:right;
 		  }
 		  .sidebar {
 		    padding-left: 10px;
@@ -42,7 +45,7 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		</style>
 	</head>
 	<body>
-		<div class="float center sidebar">
+		<div id="status" class="floatl center sidebar">
 			<h1>Shoku Online</h1>
 			<h3>Current Player</h3>
 			<h2 id="player">None</h2>
@@ -50,12 +53,12 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			<h2 id="step">Deploy</h2>
 			<input id="endturn" type="button" value="Fortify and end turn">
 		</div>
-		<canvas class="float" id="board"></canvas>
+		<canvas id="board" class="floatl"></canvas>
 		<!--div class="float">stuff-->
 			<!--img class="fit float" src="res/gboard.jpeg"-->
 			<!--img class="piece" src="res/GoldArcher.png">
 		</div-->
-		<div class="float sidebar">
+		<div id="chat" class="floatl sidebar">
 			<h3>Chat</h3>
 			<input id="message" type="text" placeholder="message">
 			<input id="submit" type="button" value="submit">
@@ -65,22 +68,33 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 
 		<script type="text/javascript">
 			var pixiRenderer = PIXI.autoDetectRenderer(1652, 1282, {
-				'view': document.getElementById('board'),      
+				'view': document.getElementById('board'),      'backgroundColor': 0xCCCCCC
 			});
 			var pixiStage = new PIXI.Container();
 			var pixiBoard = new PIXI.Sprite(PIXI.Texture.fromImage('res/gboard.jpeg'));      
-			pixiStage.addChild(pixiBoard);      
+			pixiStage.addChild(pixiBoard);
+			var ratio = 1652/1282;
 			(function functionGameloop() {        
-				(pixiRenderer.render(pixiStage));        
+				pixiRenderer.render(pixiStage);        
 				window.requestAnimationFrame(functionGameloop);      
 			})();
-		  /*function set_body_height() { // set body height = window height
-		    $('body').height($(window).height());
-		  }
-		  $(document).ready(function() {
-		    $(window).bind('resize', set_body_height);
-		    set_body_height();
-		  });*/
+			//The following code is based on code found at http://stackoverflow.com/questions/30554533/dynamically-resize-the-pixi-stage-and-its-contents-on-window-resize-and-window 
+			resize();
+			function resize() {
+				var sidebarW = document.getElementById("status").offsetWidth + document.getElementById("chat").offsetWidth;
+				var availW = window.innerWidth - sidebarW;
+			    if (availW / window.innerHeight >= ratio) {
+				var w = window.innerHeight * ratio;
+				var h = window.innerHeight;
+			    } else {
+				var w = availW;
+				var h = availW / ratio;
+			    }
+			    pixiRenderer.view.style.width = w + 'px';
+			    pixiRenderer.view.style.height = h + 'px';
+			}
+			window.onresize = resize;  
+
 			var socketHandle = io.connect('http://localhost:8080/');
 
 			var strIdent = '';
