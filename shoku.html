@@ -11,10 +11,16 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 
 		<script type="text/javascript" src="http://localhost:8080/socket.io/socket.io.js"></script>
 
+		<script type="text/javascript"src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.11/pixi.min.js"></script>
+
 		<style>
 		  body {
 		    padding: 0;
 		    margin: 0;
+		  }
+		  canvas {
+		    max-width: 100%;
+		    max-height: 100%;
 		  }
 		  .fit { /* set relative picture size */
 		    max-width: 100%;
@@ -44,8 +50,9 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			<h2 id="step">Deploy</h2>
 			<input id="endturn" type="button" value="Fortify and end turn">
 		</div>
+		<canvas class="float" id="board"></canvas>
 		<!--div class="float">stuff-->
-			<img class="fit float" src="res/gboard.jpeg">
+			<!--img class="fit float" src="res/gboard.jpeg"-->
 			<!--img class="piece" src="res/GoldArcher.png">
 		</div-->
 		<div class="float sidebar">
@@ -57,13 +64,23 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		</div>
 
 		<script type="text/javascript">
-		  function set_body_height() { // set body height = window height
+			var pixiRenderer = PIXI.autoDetectRenderer(1652, 1282, {
+				'view': document.getElementById('board'),      
+			});
+			var pixiStage = new PIXI.Container();
+			var pixiBoard = new PIXI.Sprite(PIXI.Texture.fromImage('res/gboard.jpeg'));      
+			pixiStage.addChild(pixiBoard);      
+			(function functionGameloop() {        
+				(pixiRenderer.render(pixiStage));        
+				window.requestAnimationFrame(functionGameloop);      
+			})();
+		  /*function set_body_height() { // set body height = window height
 		    $('body').height($(window).height());
 		  }
 		  $(document).ready(function() {
 		    $(window).bind('resize', set_body_height);
 		    set_body_height();
-		  });
+		  });*/
 			var socketHandle = io.connect('http://localhost:8080/');
 
 			var strIdent = '';
