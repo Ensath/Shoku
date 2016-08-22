@@ -19,29 +19,28 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		  .fit { /* set relative picture size */
 		    max-width: 100%;
 		    max-height: 100%;
-		    padding: 0;
-		    margin: 0;
+		    margin: auto;
 		  }
 		  .center {
-		    display: block;
-		    margin: auto;
+		    text-align: center;
 		  }
 		  .float {
 		    float:left;
 		  }
-		  .chat {
-		    padding-left: 5px;
+		  .sidebar {
+		    padding-left: 10px;
+		    padding-right: 10px;
 		  }
 		</style>
 	</head>
 	<body>
-		<div class="float">
+		<div class="float center sidebar">
 			<h1>Shoku Online</h1>
 			<h2>Current Player</h2>
 			<h2>Current Step</h2>
 		</div>
 		<img class="fit float" src="res/gboard.jpeg">
-		<div class="float chat">
+		<div class="float sidebar">
 			<h3>Chat</h3>
 			<input id="message" type="text" placeholder="message">
 			<input id="submit" type="button" value="submit">
