@@ -12,13 +12,15 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		<script type="text/javascript" src="http://localhost:8080/socket.io/socket.io.js"></script>
 
 		<style>
-		  * {
+		  body {
 		    padding: 0;
 		    margin: 0;
 		  }
 		  .fit { /* set relative picture size */
 		    max-width: 100%;
 		    max-height: 100%;
+		    padding: 0;
+		    margin: 0;
 		  }
 		  .center {
 		    display: block;
@@ -33,6 +35,11 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		</style>
 	</head>
 	<body>
+		<div class="float">
+			<h1>Shoku Online</h1>
+			<h2>Current Player</h2>
+			<h2>Current Step</h2>
+		</div>
 		<img class="fit float" src="res/gboard.jpeg">
 		<div class="float chat">
 			<h3>Chat</h3>
