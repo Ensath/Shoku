@@ -77,6 +77,7 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			var sh = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunHorseman.png'));      
 			var ss = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunShieldbearer.png'));      
 			var sw = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunWarrior.png'));      
+			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
 			pixiStage.addChild(pixiBoard);
 			pixiStage.addChild(sa);
 			sa.position.x = 625;
@@ -90,6 +91,9 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			pixiStage.addChild(sw);
 			sw.position.x = 1225;
 			sw.position.y = 1170;
+			pixiStage.addChild(spiritTrackMarker);
+			spiritTrackMarker.position.x = 195;
+			spiritTrackMarker.position.y = 581;
 			var ratio = 1652/1282;
 			(function functionGameloop() {        
 				pixiRenderer.render(pixiStage);        
