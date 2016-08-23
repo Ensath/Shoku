@@ -17,7 +17,7 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		  body {
 		    padding: 0;
 		    margin: 0;
-		    background-color:black;
+		    background-color:#0F0E0C;
 		    color:white;
 		  }
 		  canvas {
@@ -59,10 +59,6 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			<input id="endturn" type="button" value="Fortify and end turn">
 		</div>
 		<canvas id="board" class="floatl"></canvas>
-		<!--div class="float">stuff-->
-			<!--img class="fit float" src="res/gboard.jpeg"-->
-			<!--img class="piece" src="res/GoldArcher.png">
-		</div-->
 		<div id="chat" class="floatl sidebar">
 			<h3>Chat</h3>
 			<input id="message" type="text" placeholder="message">
@@ -76,7 +72,7 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 				'view': document.getElementById('board'),      'backgroundColor': 0xCCCCCC
 			});
 			var pixiStage = new PIXI.Container();
-			var pixiBoard = new PIXI.Sprite(PIXI.Texture.fromImage('res/sboard.jpeg'));      
+			var pixiBoard = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunBoard.png'));      
 			pixiStage.addChild(pixiBoard);
 			var ratio = 1652/1282;
 			(function functionGameloop() {        
