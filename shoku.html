@@ -1,4 +1,4 @@
-<!--Code based on an assignment by Simon Niklaus
+<!--Chat code based on an assignment by Simon Niklaus
 Additional code used from http://stackoverflow.com/questions/6169666/how-to-resize-an-image-to-fit-in-the-browser-window-->
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +17,8 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		  body {
 		    padding: 0;
 		    margin: 0;
+		    background-color:black;
+		    color:white;
 		  }
 		  canvas {
 		    max-width: 100%;
@@ -41,6 +43,9 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		  }
 		  .piece {
 		    position:absolute;
+		  }
+		  div {
+
 		  }
 		</style>
 	</head>
@@ -71,14 +76,14 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 				'view': document.getElementById('board'),      'backgroundColor': 0xCCCCCC
 			});
 			var pixiStage = new PIXI.Container();
-			var pixiBoard = new PIXI.Sprite(PIXI.Texture.fromImage('res/gboard.jpeg'));      
+			var pixiBoard = new PIXI.Sprite(PIXI.Texture.fromImage('res/sboard.jpeg'));      
 			pixiStage.addChild(pixiBoard);
 			var ratio = 1652/1282;
 			(function functionGameloop() {        
 				pixiRenderer.render(pixiStage);        
 				window.requestAnimationFrame(functionGameloop);      
 			})();
-			//The following code is based on code found at http://stackoverflow.com/questions/30554533/dynamically-resize-the-pixi-stage-and-its-contents-on-window-resize-and-window 
+			//The following resizing code is based on code found at http://stackoverflow.com/questions/30554533/dynamically-resize-the-pixi-stage-and-its-contents-on-window-resize-and-window 
 			resize();
 			function resize() {
 				var sidebarW = document.getElementById("status").offsetWidth + document.getElementById("chat").offsetWidth;
