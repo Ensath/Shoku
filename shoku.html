@@ -73,7 +73,9 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			});
 			var pixiStage = new PIXI.Container();
 			var pixiBoard = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunBoard.png'));      
+			var ga = new PIXI.Sprite(PIXI.Texture.fromImage('res/GoldArcher.png'));      
 			pixiStage.addChild(pixiBoard);
+			pixiStage.addChild(ga);
 			var ratio = 1652/1282;
 			(function functionGameloop() {        
 				pixiRenderer.render(pixiStage);        
