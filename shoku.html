@@ -82,8 +82,14 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			//The following resizing code is based on code found at http://stackoverflow.com/questions/30554533/dynamically-resize-the-pixi-stage-and-its-contents-on-window-resize-and-window 
 			resize();
 			function resize() {
-				var sidebarW = document.getElementById("status").offsetWidth + document.getElementById("chat").offsetWidth;
+				var sidebarW = document.getElementById("status").offsetWidth + document.getElementById("chat").offsetWidth + 1;
 				var availW = window.innerWidth - sidebarW;
+				if (availW < document.getElementById("status").offsetWidth) {
+					availW = document.getElementById("status").offsetWidth;
+				}
+				if (availW < 290) {
+					availW = 290;
+				}
 			    if (availW / window.innerHeight >= ratio) {
 				var w = window.innerHeight * ratio;
 				var h = window.innerHeight;
