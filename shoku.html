@@ -90,6 +90,18 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			function mouseDownCallback(mouseData) {  
 				console.log("X = "+mouseData.data.getLocalPosition(pixiBoard).x);  
 				console.log("Y = "+mouseData.data.getLocalPosition(pixiBoard).y);
+				getHexagon(mouseData.data.getLocalPosition(pixiBoard).x, mouseData.data.getLocalPosition(pixiBoard).y);
+			}
+
+			function getHexagon(x, y) {
+				for (var i = 0; i < 7; i+=1) {
+					for (var j = 0; j < 7; j+=1) {
+						var distance = Math.sqrt(Math.pow((572.5 + i * 136 - x), 2) + Math.pow((183 + j * 153 + (i+1)%2*76.5 - y), 2))
+						if (distance < 76.5) {
+							console.log("Clicked " + distance + " pixels away in " + i + ", " + j);
+						}
+					}
+				}
 			}
 
 			(function functionGameloop() {        
