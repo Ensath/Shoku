@@ -1,6 +1,7 @@
-<!--Copyright (c) 2016 Noah Freed 
+<!--
+Copyright (c) 2016 Noah Freed 
 Chat code based on an assignment by Simon Niklaus
-Additional code used from http://stackoverflow.com/questions/6169666/how-to-resize-an-image-to-fit-in-the-browser-window-->
+-->
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -20,10 +21,6 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 		    margin: 0;
 		    background-color:#0F0E0C;
 		    color:white;
-		  }
-		  canvas {
-		    max-width: 100%;
-		    max-height: 100%;
 		  }
 		  .center {
 		    text-align: center;
@@ -93,23 +90,29 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 				getHexagon(mouseData.data.getLocalPosition(pixiBoard).x, mouseData.data.getLocalPosition(pixiBoard).y);
 			}
 
+			//Identify the tile clicked
 			function getHexagon(x, y) {
 				var minDist = 9999;
-				var hexX = -2;
-				var hexY = -2;
+				var hex = {};
+				hex.X = -2;
+				hex.Y = -2;
 				for (var i = -1; i < 8; i+=1) {
 					for (var j = -1; j < 8; j+=1) {
 						var distance = Math.sqrt(Math.pow((572.5 + i * 136 - x), 2) + Math.pow((183 + j * 157 + (i+1)%2*76.5 - y), 2))
 						if (distance < minDist) {
-							hexX = i;
-							hexY = j;
+							hex.X = i;
+							hex.Y = j;
 							minDist = distance;
 						}
 					}
 				}
-				console.log("Clicked " + minDist + " pixels away in " + hexX + ", " + hexY);
+				console.log("Clicked " + minDist + " pixels away in " + hex.X + ", " + hex.Y);
+				return hex;
 			}
 
+			//function
+
+			//Continuously draw the game
 			(function functionGameloop() {        
 				pixiRenderer.render(pixiStage);        
 				window.requestAnimationFrame(functionGameloop);      
@@ -139,6 +142,7 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 			}
 			window.onresize = resize;  
 
+			//Communication with the server
 			var socketHandle = io.connect('http://localhost:8080/');
 
 			var strIdent = '';
@@ -147,6 +151,7 @@ Additional code used from http://stackoverflow.com/questions/6169666/how-to-resi
 				strIdent = data.id;
 			});
 
+			//Chat
 			socketHandle.on('message', function(data) {
 				jQuery('#output')
 					.prepend(data.from + ': ' + data.message + '\n')
