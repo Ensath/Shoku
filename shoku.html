@@ -81,6 +81,11 @@ Chat code based on an assignment by Simon Niklaus
 			spiritTrackMarker.position.x = 195;
 			spiritTrackMarker.position.y = 581;
 			pixiBoard.interactive = true;
+			sa.interactive = true;
+			sh.interactive = true;
+			ss.interactive = true;
+			sw.interactive = true;
+			spiritTrackMarker.interactive = true;
 
 			//The following mousedown detection code is based on code found at http://www.html5gamedevs.com/topic/14343-how-to-get-mouse-position-in-every-frame-in-v3/
 			pixiBoard.on('mousedown', mouseDownCallback);
@@ -98,7 +103,7 @@ Chat code based on an assignment by Simon Niklaus
 				hex.Y = -2;
 				for (var i = -1; i < 8; i+=1) {
 					for (var j = -1; j < 8; j+=1) {
-						var distance = Math.sqrt(Math.pow((572.5 + i * 136 - x), 2) + Math.pow((183 + j * 157 + (i+1)%2*76.5 - y), 2))
+						var distance = Math.sqrt(Math.pow((572.5 + i * 136 - x), 2) + Math.pow((182 + j * 157 + (i+1)%2*78.5 - y), 2))
 						if (distance < minDist) {
 							hex.X = i;
 							hex.Y = j;
@@ -110,7 +115,11 @@ Chat code based on an assignment by Simon Niklaus
 				return hex;
 			}
 
-			//function
+			//Push the spirit track market when clicked
+			spiritTrackMarker.on('mousedown', pushSTM);
+			function pushSTM(data) {
+				console.log("Push the STM");
+			}
 
 			//Continuously draw the game
 			(function functionGameloop() {        
