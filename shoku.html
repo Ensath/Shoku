@@ -167,8 +167,14 @@ Chat code based on an assignment by Simon Niklaus
 				socketHandle.emit('pushSTM');
 			}
 
-			socketHandle.on('pushedSTM', function() {
+			socketHandle.on('pushedSTM', function(data) {
 				console.log("Pushed STM");
+				if (data.army === 'Sun') {
+					spiritTrackMarker.position.y -= 100;
+				} else {
+					spiritTrackMarker.position.y += 100;
+				}
+				console.log(data.army);
 			});
 
 			//Chat

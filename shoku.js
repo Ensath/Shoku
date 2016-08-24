@@ -20,7 +20,8 @@ io.on('connection', function(socketHandle) {
 	socketHandle.id = Math.random().toString(36).substr(2, 8);
 	objectClients[socketHandle.id] = {
 		'id': socketHandle.id,
-		'socket': socketHandle
+		'socket': socketHandle,
+		'army': 'Sun'
 	};
 	// send the new client the 'hello' event, containing the assigned id - example: { 'id':'9T1P4pUQ' }
 	socketHandle.emit('hello', {
@@ -86,7 +87,9 @@ io.on('connection', function(socketHandle) {
 		if (STM < 5) { 
 			STM++;
 			for (var client in objectClients) {
-				objectClients[client].socket.emit('pushedSTM');
+				objectClients[client].socket.emit('pushedSTM', {
+					'army':'Sun'
+				});
 			}
 		}
 	});
