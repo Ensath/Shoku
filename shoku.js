@@ -14,6 +14,8 @@ var io = socket(server.listen(process.env.PORT || 8080)); // do not change this 
 var objectClients = {};
 
 var STM = 3;
+var armies = ['Sun', 'Moon'];
+var user = 0;
 
 io.on('connection', function(socketHandle) {
 	// assign a random id to the socket and store the socketHandle in the objectClients variable - example: '9T1P4pUQ'
@@ -21,8 +23,13 @@ io.on('connection', function(socketHandle) {
 	objectClients[socketHandle.id] = {
 		'id': socketHandle.id,
 		'socket': socketHandle,
-		'army': 'Sun'
+		'army': armies[user]
 	};
+	if (user === 0) {
+		user = 1;
+	} else {
+		user = 0;
+	}
 	// send the new client the 'hello' event, containing the assigned id - example: { 'id':'9T1P4pUQ' }
 	socketHandle.emit('hello', {
 		'id': socketHandle.id
@@ -84,13 +91,23 @@ io.on('connection', function(socketHandle) {
 	});
 
 	socketHandle.on('pushSTM', function() {
-		if (STM < 5) { 
-			STM++;
-			for (var client in objectClients) {
-				objectClients[client].socket.emit('pushedSTM', {
-					'army':objectClients[socketHandle.id].army
-				});
+		if (objectClients[socketHandle.id].army == 'Sun') {
+			if (STM < 5) { 
+				STM++;
+			} else {
+				return;
 			}
+		} else {
+			if (STM > 1) { 
+				STM--;
+			} else {
+				return;
+			}
+		}
+		for (var client in objectClients) {
+			objectClients[client].socket.emit('pushedSTM', {
+				'army':objectClients[socketHandle.id].army
+			});
 		}
 	});
 
