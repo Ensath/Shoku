@@ -13,6 +13,8 @@ var io = socket(server.listen(process.env.PORT || 8080)); // do not change this 
 
 var objectClients = {};
 
+var STM = 3;
+
 io.on('connection', function(socketHandle) {
 	// assign a random id to the socket and store the socketHandle in the objectClients variable - example: '9T1P4pUQ'
 	socketHandle.id = Math.random().toString(36).substr(2, 8);
@@ -24,7 +26,7 @@ io.on('connection', function(socketHandle) {
 	socketHandle.emit('hello', {
 		'id': socketHandle.id
 	});
-	// send everyone the 'clients' event, contianing an array of the connected clients - example: { 'array':['GxwYr9Uz','9T1P4pUQ'] }
+	// send everyone the 'clients' event, containing an array of the connected clients - example: { 'array':['GxwYr9Uz','9T1P4pUQ'] }
 	var array = [];
 	for (var client in objectClients) {
 		array.push(objectClients[client].id);
@@ -77,6 +79,15 @@ io.on('connection', function(socketHandle) {
 				'to': objectData.to,
 				'message': objectData.message
 			});
+		}
+	});
+
+	socketHandle.on('pushSTM', function() {
+		if (STM < 5) { 
+			STM++;
+			for (var client in objectClients) {
+				objectClients[client].socket.emit('pushedSTM');
+			}
 		}
 	});
 

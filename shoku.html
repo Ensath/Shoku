@@ -116,10 +116,12 @@ Chat code based on an assignment by Simon Niklaus
 			}
 
 			//Push the spirit track market when clicked
-			spiritTrackMarker.on('mousedown', pushSTM);
-			function pushSTM(data) {
-				console.log("Push the STM");
-			}
+			spiritTrackMarker.on('click',
+				function () {
+					console.log("Push the STM");
+					pushSTM();
+				}
+			);
 
 			//Continuously draw the game
 			(function functionGameloop() {        
@@ -151,13 +153,22 @@ Chat code based on an assignment by Simon Niklaus
 			}
 			window.onresize = resize;  
 
-			//Communication with the server
+			//Establish communication with the server
 			var socketHandle = io.connect('http://localhost:8080/');
 
 			var strIdent = '';
 
 			socketHandle.on('hello', function(data) {
 				strIdent = data.id;
+			});
+
+			//Send and receive game state changes
+			function pushSTM() {
+				socketHandle.emit('pushSTM');
+			}
+
+			socketHandle.on('pushedSTM', function() {
+				console.log("Pushed STM");
 			});
 
 			//Chat
