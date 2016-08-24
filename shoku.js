@@ -88,7 +88,7 @@ io.on('connection', function(socketHandle) {
 			STM++;
 			for (var client in objectClients) {
 				objectClients[client].socket.emit('pushedSTM', {
-					'army':'Sun'
+					'army':objectClients[socketHandle.id].army
 				});
 			}
 		}
