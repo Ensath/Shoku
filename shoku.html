@@ -194,15 +194,14 @@ Chat code based on an assignment by Simon Niklaus
 				socketHandle.emit('pushSTM');
 			}
 
-			socketHandle.on('pushedSTM', function(data) {
-				console.log("Pushed STM");
+			socketHandle.on('update', function(data) {
 				var extra = 0;
-				if (data.position < 2 || data.position > 4) {
+				if (data.STM < 2 || data.STM > 4) {
 					extra = 14;
 				}
-				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.position) * 16 + extra;
-				spiritTrackMarker.position.y = 195 * (6 - data.position) - 3;
-				console.log(data.army);
+				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.STM) * 16 + extra;
+				spiritTrackMarker.position.y = 195 * (6 - data.STM) - 3;
+
 			});
 
 			function selectIcon(strIcon) {

@@ -17,6 +17,14 @@ var STM = 3;
 var armies = ['Sun', 'Moon'];
 var user = 0;
 var selected = null;
+var targeted = null;
+var marched = [];
+var fortified = null;
+var board = [
+"......",
+".....",
+"......"
+]
 
 io.on('connection', function(socketHandle) {
 	// assign a random id to the socket and store the socketHandle in the objectClients variable - example: '9T1P4pUQ'
@@ -105,11 +113,7 @@ io.on('connection', function(socketHandle) {
 				return;
 			}
 		}
-		for (var client in objectClients) {
-			objectClients[client].socket.emit('pushedSTM', {
-				'position':STM
-			});
-		}
+		update();
 	});
 
 	socketHandle.on('selectIcon', function(data) {
@@ -123,11 +127,11 @@ io.on('connection', function(socketHandle) {
 			selected = null;
 		} else {
 			selected = data.icon;
-			for (var client in objectClients) {
-				objectClients[client].socket.emit('highlight', {
-					'target':selected
-				});
-			}
+		}
+		for (var client in objectClients) {
+			objectClients[client].socket.emit('highlight', {
+				'target':selected
+			});
 		}
 
 	});
@@ -155,5 +159,14 @@ io.on('connection', function(socketHandle) {
 		}
 	});
 });
+
+function update() {
+	for (var client in objectClients) {
+		objectClients[client].socket.emit('update', {
+			'STM':STM,
+			'selected':selected
+		});
+	}
+}
 
 console.log('go ahead and open "http://localhost:8080/shoku.html" in your browser');
