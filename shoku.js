@@ -21,9 +21,13 @@ var targeted = null;
 var marched = [];
 var fortified = null;
 var board = [
-"......",
-".....",
-"......"
+['.','.','.','.','.','.'],
+['.','.','.','.','.'],
+['.','.','.','.','.','.'],
+['.','.','.','.','.','.','.'],
+['.','.','.','.','.','.'],
+['.','.','.','.','.'],
+['.','.','.','.','.','.']
 ]
 
 io.on('connection', function(socketHandle) {
@@ -136,6 +140,13 @@ io.on('connection', function(socketHandle) {
 
 	});
 
+	socketHandle.on('tapBoard', function(data) {
+		if (selected === 'sa') {
+			board[data.x][data.y] = 'A';
+		}
+		update();
+	});
+
 	socketHandle.on('disconnect', function() {
 		// remove the disconnected client from the objectClients variable
 		delete objectClients[socketHandle.id];
@@ -164,7 +175,10 @@ function update() {
 	for (var client in objectClients) {
 		objectClients[client].socket.emit('update', {
 			'STM':STM,
-			'selected':selected
+			'selected':selected,
+			'targeted':targeted,
+			'fortified':fortified,
+			'board':board
 		});
 	}
 }
