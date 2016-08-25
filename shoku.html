@@ -65,7 +65,7 @@ Chat code based on an assignment by Simon Niklaus
 			var sw = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunWarrior.png'));      
 			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
 			var sunIcons = [sa, sh, ss, sw];
-			
+
 			pixiStage.addChild(pixiBoard);
 			pixiStage.addChild(sa);
 			sa.position.x = 625;
@@ -213,11 +213,12 @@ Chat code based on an assignment by Simon Niklaus
 
 			socketHandle.on('highlight', function(data) {
 				console.log("Hightlighted " + data.target);
-				sa.tint = 0x999999;
+				sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
 			});
 
 			socketHandle.on('unhighlight', function(data) {
 				console.log("Unhightlighted " + data.target);
+				sa.texture = PIXI.Texture.fromImage('res/SunArcher.png');
 			});
 
 			//Chat
