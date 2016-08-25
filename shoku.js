@@ -48,14 +48,14 @@ io.on('connection', function(socketHandle) {
 	for (var client in objectClients) {
 		var source = '';
 		if (socketHandle.id === objectClients[client].id) {
-			source = 'You';
+			source = 'You command';
 		} else {
-			source = 'Opponent';
+			source = 'Your opponent commands';
 		}
 		objectClients[client].socket.emit('message', {
 			'from':'Server',
 			'to':'everyone',
-			'message': source + ' connected'
+			'message': source + ' the Army of the ' + objectClients[socketHandle.id].army
 		});
 	}
 
@@ -106,7 +106,7 @@ io.on('connection', function(socketHandle) {
 		}
 		for (var client in objectClients) {
 			objectClients[client].socket.emit('pushedSTM', {
-				'army':objectClients[socketHandle.id].army
+				'position':STM
 			});
 		}
 	});

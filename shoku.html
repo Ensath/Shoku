@@ -169,11 +169,12 @@ Chat code based on an assignment by Simon Niklaus
 
 			socketHandle.on('pushedSTM', function(data) {
 				console.log("Pushed STM");
-				if (data.army === 'Sun') {
-					spiritTrackMarker.position.y -= 100;
-				} else {
-					spiritTrackMarker.position.y += 100;
+				var extra = 0;
+				if (data.position < 2 || data.position > 4) {
+					extra = 15;
 				}
+				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.position) * 15 + extra;
+				spiritTrackMarker.position.y = 195 * (6 - data.position) - 3;
 				console.log(data.army);
 			});
 
