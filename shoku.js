@@ -16,6 +16,7 @@ var objectClients = {};
 var STM = 3;
 var armies = ['Sun', 'Moon'];
 var user = 0;
+var selected = null;
 
 io.on('connection', function(socketHandle) {
 	// assign a random id to the socket and store the socketHandle in the objectClients variable - example: '9T1P4pUQ'
@@ -109,6 +110,26 @@ io.on('connection', function(socketHandle) {
 				'position':STM
 			});
 		}
+	});
+
+	socketHandle.on('selectIcon', function(data) {
+		console.log("selectIcon running");
+		for (var client in objectClients) {
+			objectClients[client].socket.emit('unhighlight', {
+				'target':selected
+			});
+		}
+		if (selected === data.icon) {
+			selected = null;
+		} else {
+			selected = data.icon;
+			for (var client in objectClients) {
+				objectClients[client].socket.emit('highlight', {
+					'target':selected
+				});
+			}
+		}
+
 	});
 
 	socketHandle.on('disconnect', function() {

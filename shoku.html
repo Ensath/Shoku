@@ -64,6 +64,8 @@ Chat code based on an assignment by Simon Niklaus
 			var ss = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunShieldbearer.png'));      
 			var sw = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunWarrior.png'));      
 			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
+			var sunIcons = [sa, sh, ss, sw];
+			
 			pixiStage.addChild(pixiBoard);
 			pixiStage.addChild(sa);
 			sa.position.x = 625;
@@ -123,6 +125,31 @@ Chat code based on an assignment by Simon Niklaus
 				}
 			);
 
+			//Select a piece icon when clicked
+			sa.on('click',
+				function () {
+					selectIcon('sa')
+				}
+			);
+
+			sh.on('click',
+				function () {
+					selectIcon('sh')
+				}
+			);
+
+			ss.on('click',
+				function () {
+					selectIcon('ss')
+				}
+			);
+
+			sw.on('click',
+				function () {
+					selectIcon('sw')
+				}
+			);
+
 			//Continuously draw the game
 			(function functionGameloop() {        
 				pixiRenderer.render(pixiStage);        
@@ -171,11 +198,26 @@ Chat code based on an assignment by Simon Niklaus
 				console.log("Pushed STM");
 				var extra = 0;
 				if (data.position < 2 || data.position > 4) {
-					extra = 15;
+					extra = 14;
 				}
-				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.position) * 15 + extra;
+				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.position) * 16 + extra;
 				spiritTrackMarker.position.y = 195 * (6 - data.position) - 3;
 				console.log(data.army);
+			});
+
+			function selectIcon(strIcon) {
+				socketHandle.emit('selectIcon', {
+					'icon':strIcon
+				});
+			}
+
+			socketHandle.on('highlight', function(data) {
+				console.log("Hightlighted " + data.target);
+				sa.tint = 0x999999;
+			});
+
+			socketHandle.on('unhighlight', function(data) {
+				console.log("Unhightlighted " + data.target);
 			});
 
 			//Chat
