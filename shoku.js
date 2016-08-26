@@ -160,6 +160,9 @@ io.on('connection', function(socketHandle) {
 		}
 		if (currentStep === 'Deploy') {
 			if (objectClients[socketHandle.id].army == 'Sun') {
+				if (data.tile > 1 || ((data.row === 1 || data.row === 5) && data.tile > 0)) {
+					return;
+				}
 				if (selectedS === 'sa') {
 					boardPieces[data.row][data.tile] = 'A';
 				} else if (selectedS === 'sh') {
@@ -170,6 +173,9 @@ io.on('connection', function(socketHandle) {
 					boardPieces[data.row][data.tile] = 'W';
 				}
 			} else { 
+				if (data.tile < 4 || ((data.row === 3) && data.tile < 5)) {
+					return;
+				}
 				if (selectedM === 'ma') {
 					boardPieces[data.row][data.tile] = 'a';
 				} else if (selectedM === 'mh') {
@@ -228,7 +234,8 @@ function update() {
 			'fortified':fortified,
 			'boardPieces':boardPieces,
 			'currentPlayer':currentPlayer,
-			'currentStep':currentStep
+			'currentStep':currentStep,
+			'army':objectClients[socketHandle.id].army
 		});
 	}
 }
