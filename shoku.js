@@ -146,7 +146,7 @@ io.on('connection', function(socketHandle) {
 
 	socketHandle.on('tapBoard', function(data) {
 		if (selected === 'sa') {
-			boardPieces[data.x][data.y] = 'A';
+			boardPieces[data.row][data.tile] = 'A';
 		}
 		update();
 	});

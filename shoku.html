@@ -97,6 +97,11 @@ Chat code based on an assignment by Simon Niklaus
 				console.log("X = "+mouseData.data.getLocalPosition(pixiBoard).x);  
 				console.log("Y = "+mouseData.data.getLocalPosition(pixiBoard).y);
 				var hex = getHexagon(mouseData.data.getLocalPosition(pixiBoard).x, mouseData.data.getLocalPosition(pixiBoard).y);
+				if (hex.X === 3) {
+					hex.Y = 6 - hex.Y
+				} else {
+					hex.Y = 5 - hex.Y
+				}
 				tapBoard(hex.X, hex.Y);
 			}
 
@@ -226,9 +231,18 @@ Chat code based on an assignment by Simon Niklaus
 
 			function drawUnit(row, tile, unit) {
 				var newUnit =  new PIXI.Sprite(PIXI.Texture.fromImage('res/SunArcher.png'));
+				var offset = 0;
+				if (row === 1 || row === 5) {
+					console.log("1 or 5");
+					offset -= 78.5;
+				}
+				if (row === 3) {
+					offset += 78.5;
+				}
 				pixiStage.addChild(newUnit);
-				newUnit.position.x = row * 136;
-				newUnit.position.y = tile * 157;
+				newUnit.position.x = 522 + row * 136;
+				newUnit.position.y = (5 - tile) * 157 + 206 + offset;
+
 				//addedUnits.push(newUnit);
 			}
 
@@ -242,10 +256,10 @@ Chat code based on an assignment by Simon Niklaus
 				});
 			}
 
-			function tapBoard(x, y) {
+			function tapBoard(row, tile) {
 				socketHandle.emit('tapBoard', {
-					'x':x,
-					'y':y
+					'row':row,
+					'tile':tile
 				});
 			}
 
