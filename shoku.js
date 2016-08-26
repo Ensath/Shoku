@@ -85,7 +85,7 @@ io.on('connection', function(socketHandle) {
 	}
 
 	//Display the initial board
-	update();
+	update(objectClients[socketHandle.id].army);
 
 	socketHandle.on('message', function(objectData) {
 		// if the message should be recevied by everyone, broadcast it accordingly
@@ -132,7 +132,7 @@ io.on('connection', function(socketHandle) {
 				return;
 			}
 		}
-		update();
+		update(objectClients[socketHandle.id].army);
 	});
 
 	socketHandle.on('selectIcon', function(data) {
@@ -150,7 +150,7 @@ io.on('connection', function(socketHandle) {
 				selectedM = data.icon;
 			}
 		}
-		update();
+		update(objectClients[socketHandle.id].army);
 	});
 
 	socketHandle.on('tapBoard', function(data) {
@@ -187,7 +187,7 @@ io.on('connection', function(socketHandle) {
 				}
 			} 
 		}
-		update();
+		update(objectClients[socketHandle.id].army);
 	});
 
 	socketHandle.on('endTurn', function() {
@@ -197,7 +197,7 @@ io.on('connection', function(socketHandle) {
 			currentPlayer = "Sun";
 		}
 		currentStep = "March";
-		update();
+		update(objectClients[socketHandle.id].army);
 	});
 
 	socketHandle.on('disconnect', function() {
@@ -224,7 +224,7 @@ io.on('connection', function(socketHandle) {
 	});
 });
 
-function update() {
+function update(army) {
 	for (var client in objectClients) {
 		objectClients[client].socket.emit('update', {
 			'STM':STM,
@@ -235,7 +235,7 @@ function update() {
 			'boardPieces':boardPieces,
 			'currentPlayer':currentPlayer,
 			'currentStep':currentStep,
-			'army':objectClients[socketHandle.id].army
+			'army':army
 		});
 	}
 }

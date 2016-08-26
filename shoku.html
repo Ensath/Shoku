@@ -64,8 +64,13 @@ Chat code based on an assignment by Simon Niklaus
 			var sh = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunHorseman.png'));      
 			var ss = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunShieldbearer.png'));      
 			var sw = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunWarrior.png'));      
-			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
 			var sunIcons = [sa, sh, ss, sw];
+			var ma = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonArcher.png'));      
+			var mh = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonHorseman.png'));      
+			var ms = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonShieldbearer.png'));      
+			var mw = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonWarrior.png'));      
+			var moonIcons = [ma, mh, ms, mw];
+			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
 
 			//Draw the game elements
 			pixiStage.addChild(pixiBoard);
@@ -81,6 +86,9 @@ Chat code based on an assignment by Simon Niklaus
 			pixiStage.addChild(sw);
 			sw.position.x = 1225;
 			sw.position.y = 1170;
+			for (var icon in moonIcons) {
+				pixiStage.addChild(moonIcons[icon]);
+			}
 			pixiStage.addChild(spiritTrackMarker);
 			spiritTrackMarker.position.x = 195;
 			spiritTrackMarker.position.y = 581;
