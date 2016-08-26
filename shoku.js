@@ -16,11 +16,11 @@ var objectClients = {};
 var STM = 3;
 var armies = ['Sun', 'Moon'];
 var user = 0;
-var selectedS = null;
-var selectedM = null;
-var targeted = null;
+var selectedS = [null, null, null];
+var selectedM = [null, null, null];
+var targeted = [null, null, null];
 var marched = [];
-var fortified = null;
+var fortified = [null, null, null];
 var boardPieces = [
 ['.','.','.','.','.','.'],
 ['.','.','.','.','.'],
@@ -138,16 +138,16 @@ io.on('connection', function(socketHandle) {
 	socketHandle.on('selectIcon', function(data) {
 		//console.log("selectIcon running");
 		if (objectClients[socketHandle.id].army == 'Sun') {
-			if (selectedS === data.icon) {
-				selectedS = null;
+			if (selectedS[0] === data.icon) {
+				selectedS[0] = null;
 			} else {
-				selectedS = data.icon;
+				selectedS[0] = data.icon;
 			}
 		} else {
-			if (selectedM === data.icon) {
-				selectedM = null;
+			if (selectedM[0] === data.icon) {
+				selectedM[0] = null;
 			} else {
-				selectedM = data.icon;
+				selectedM[0] = data.icon;
 			}
 		}
 		update(objectClients[socketHandle.id].army);
@@ -163,26 +163,26 @@ io.on('connection', function(socketHandle) {
 				if (data.tile > 1 || ((data.row === 1 || data.row === 5) && data.tile > 0)) {
 					return;
 				}
-				if (selectedS === 'sa' && countUnit('A') < 3) {
+				if (selectedS[0] === 'sa' && countUnit('A') < 3) {
 					boardPieces[data.row][data.tile] = 'A';
-				} else if (selectedS === 'sh' && countUnit('H') < 3) {
+				} else if (selectedS[0] === 'sh' && countUnit('H') < 3) {
 					boardPieces[data.row][data.tile] = 'H';
-				} else if (selectedS === 'ss' && countUnit('S') < 3) {
+				} else if (selectedS[0] === 'ss' && countUnit('S') < 3) {
 					boardPieces[data.row][data.tile] = 'S';
-				} else if (selectedS === 'sw' && countUnit('W') < 3) {
+				} else if (selectedS[0] === 'sw' && countUnit('W') < 3) {
 					boardPieces[data.row][data.tile] = 'W';
 				}
 			} else { 
 				if (data.tile < 4 || ((data.row === 3) && data.tile < 5)) {
 					return;
 				}
-				if (selectedM === 'ma' && countUnit('a') < 3) {
+				if (selectedM[0] === 'ma' && countUnit('a') < 3) {
 					boardPieces[data.row][data.tile] = 'a';
-				} else if (selectedM === 'mh' && countUnit('h') < 3) {
+				} else if (selectedM[0] === 'mh' && countUnit('h') < 3) {
 					boardPieces[data.row][data.tile] = 'h';
-				} else if (selectedM === 'ms' && countUnit('s') < 3) {
+				} else if (selectedM[0] === 'ms' && countUnit('s') < 3) {
 					boardPieces[data.row][data.tile] = 's';
-				} else if (selectedM === 'mw' && countUnit('w') < 3) {
+				} else if (selectedM[0] === 'mw' && countUnit('w') < 3) {
 					boardPieces[data.row][data.tile] = 'w';
 				}
 			} 

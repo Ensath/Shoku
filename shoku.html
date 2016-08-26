@@ -215,10 +215,10 @@ Chat code based on an assignment by Simon Niklaus
 			);
 
 			//Continuously draw the game
-			/*(function functionGameloop() {        
+			(function functionGameloop() {        
 				pixiRenderer.render(pixiStage);        
 				window.requestAnimationFrame(functionGameloop);      
-			})();*/
+			})();
 
 			//The following resizing code is based on code found at http://stackoverflow.com/questions/30554533/dynamically-resize-the-pixi-stage-and-its-contents-on-window-resize-and-window 
 			var ratio = 1652/1282;
@@ -270,11 +270,19 @@ Chat code based on an assignment by Simon Niklaus
 				}
 				jQuery('#player').text(data.currentPlayer);
 				jQuery('#step').text(data.currentStep);
-				//hightlight(data.selectedS);
-				//hightlight(data.selectedM);
-				//hightlight(data.targeted);
+				sa.texture = PIXI.Texture.fromImage('res/SunArcher.png');
+				sh.texture = PIXI.Texture.fromImage('res/SunHorseman.png');
+				ss.texture = PIXI.Texture.fromImage('res/SunShieldbearer.png');
+				sw.texture = PIXI.Texture.fromImage('res/SunWarrior.png');
+				ma.texture = PIXI.Texture.fromImage('res/MoonArcher.png');
+				mh.texture = PIXI.Texture.fromImage('res/MoonHorseman.png');
+				ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearer.png');
+				mw.texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
+				highlight(data.selectedS);
+				highlight(data.selectedM);
+				highlight(data.targeted);
 				//darken(data.fortified);
-				pixiRenderer.render(pixiStage);        
+				//pixiRenderer.render(pixiStage);        
 			});
 
 			/*var addedUnits = [];
@@ -306,6 +314,26 @@ Chat code based on an assignment by Simon Niklaus
 					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonShieldbearer.png');
 				} else if (unit === 'w') {
 					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
+				}
+			}
+
+			function highlight(data) {
+				if (data[0] === "sa") {
+					sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
+				} else if (data[0] === "sh") {
+					sh.texture = PIXI.Texture.fromImage('res/SunHorsemanBright.png');
+				} else if (data[0] === "ss") {
+					ss.texture = PIXI.Texture.fromImage('res/SunShieldbearerBright.png');
+				} else if (data[0] === "sw") {
+					sw.texture = PIXI.Texture.fromImage('res/SunWarriorBright.png');
+				} else if (data[0] === "ma") {
+					ma.texture = PIXI.Texture.fromImage('res/MoonArcherBright.png');
+				} else if (data[0] === "mh") {
+					mh.texture = PIXI.Texture.fromImage('res/MoonHorsemanBright.png');
+				} else if (data[0] === "ms") {
+					ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
+				} else if (data[0] === "mw") {
+					mw.texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
 				}
 			}
 
