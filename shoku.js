@@ -130,23 +130,13 @@ io.on('connection', function(socketHandle) {
 	});
 
 	socketHandle.on('selectIcon', function(data) {
-		console.log("selectIcon running");
-		for (var client in objectClients) {
-			objectClients[client].socket.emit('unhighlight', {
-				'target':selected
-			});
-		}
+		//console.log("selectIcon running");
 		if (selected === data.icon) {
 			selected = null;
 		} else {
 			selected = data.icon;
 		}
-		for (var client in objectClients) {
-			objectClients[client].socket.emit('highlight', {
-				'target':selected
-			});
-		}
-
+		update();
 	});
 
 	socketHandle.on('tapBoard', function(data) {
@@ -187,7 +177,7 @@ function update() {
 			'selected':selected,
 			'targeted':targeted,
 			'fortified':fortified,
-			'board':boardPieces
+			'boardPieces':boardPieces
 		});
 	}
 }

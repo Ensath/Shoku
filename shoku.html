@@ -191,26 +191,38 @@ Chat code based on an assignment by Simon Niklaus
 			});
 
 			//Send and receive game state changes
-			function pushSTM() {
-				socketHandle.emit('pushSTM');
-			}
-
 			socketHandle.on('update', function(data) {
-				console.log(data.board);
+				console.log(data.boardPieces);
 				var extra = 0;
 				if (data.STM < 2 || data.STM > 4) {
 					extra = 14;
 				}
 				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.STM) * 16 + extra;
 				spiritTrackMarker.position.y = 195 * (6 - data.STM) - 3;
-				for (var row in data.board) {
-					for (var tile in data.board[row]) {
-						if (data.board[row][tile] === 'A') {
-							console.log("Place an archer");
-						}
+				for (var row in data.boardPieces) {
+					for (var tile in data.boardPieces[row]) {
+						drawUnit(row, tile, data.boardPieces[row][tile]);
 					}
 				}
+				//hightlight(data.selected);
+				//hightlight(data.targeted);
+				//darken(data.fortified);
 			});
+
+			var addedUnits = [];
+
+			//function eraseUnits(
+
+			function drawUnit(row, tile, unit) {
+				var newUnit =  new PIXI.Sprite(PIXI.Texture.fromImage('res/SunArcher.png'));
+				pixiStage.addChild(newUnit);
+				newUnit.position.x = tile * 136;
+				newUnit.position.y = row * 157;
+			}
+
+			function pushSTM() {
+				socketHandle.emit('pushSTM');
+			}
 
 			function selectIcon(strIcon) {
 				socketHandle.emit('selectIcon', {
