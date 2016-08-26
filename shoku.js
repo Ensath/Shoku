@@ -28,7 +28,7 @@ var boardPieces = [
 ['.','.','.','.','.','.'],
 ['.','.','.','.','.'],
 ['.','.','.','.','.','.']
-]
+];
 var boardTiles = [
 ['w','f','e','w','e','e'],
 ['f','w','f','a','a'],
@@ -37,7 +37,9 @@ var boardTiles = [
 ['f','e','f','w','a','w'],
 ['a','a','f','w','f'],
 ['e','e','w','e','f','w']
-]
+];
+var currentPlayer = 'None';
+var currentStep = 'Deploy';
 
 io.on('connection', function(socketHandle) {
 	// assign a random id to the socket and store the socketHandle in the objectClients variable - example: '9T1P4pUQ'
@@ -146,6 +148,16 @@ io.on('connection', function(socketHandle) {
 		update();
 	});
 
+	socketHandle.on('endTurn', function() {
+		if (currentPlayer === "Sun") {
+			currentPlayer = "Moon";
+		} else {
+			currentPlayer = "Sun";
+		}
+		currentStep = "March";
+		update();
+	});
+
 	socketHandle.on('disconnect', function() {
 		// remove the disconnected client from the objectClients variable
 		delete objectClients[socketHandle.id];
@@ -177,7 +189,9 @@ function update() {
 			'selected':selected,
 			'targeted':targeted,
 			'fortified':fortified,
-			'boardPieces':boardPieces
+			'boardPieces':boardPieces,
+			'currentPlayer':currentPlayer,
+			'currentStep':currentStep
 		});
 	}
 }

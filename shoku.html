@@ -53,6 +53,7 @@ Chat code based on an assignment by Simon Niklaus
 		</div>
 
 		<script type="text/javascript">
+			//Establish the game elements
 			var pixiRenderer = PIXI.autoDetectRenderer(1652, 1282, {
 				'view': document.getElementById('board'),      
 				'backgroundColor': 0x0F0E0C
@@ -66,6 +67,7 @@ Chat code based on an assignment by Simon Niklaus
 			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
 			var sunIcons = [sa, sh, ss, sw];
 
+			//Draw the game elements
 			pixiStage.addChild(pixiBoard);
 			pixiStage.addChild(sa);
 			sa.position.x = 625;
@@ -121,7 +123,7 @@ Chat code based on an assignment by Simon Niklaus
 			//Push the spirit track market when clicked
 			spiritTrackMarker.on('click',
 				function () {
-					console.log("Push the STM");
+					//console.log("Push the STM");
 					pushSTM();
 				}
 			);
@@ -204,20 +206,29 @@ Chat code based on an assignment by Simon Niklaus
 						drawUnit(row, tile, data.boardPieces[row][tile]);
 					}
 				}
+				jQuery('#player').text(data.currentPlayer);
+				jQuery('#step').text(data.currentStep);
 				//hightlight(data.selected);
 				//hightlight(data.targeted);
 				//darken(data.fortified);
 			});
 
-			var addedUnits = [];
+			/*var addedUnits = [];
+			var clearUnit;
 
-			//function eraseUnits(
+			function eraseUnits() {
+				while (addedUnits !== []) {
+					clearUnit = addedUnits.pop();
+					clearUnit.destroy();
+				}
+			}*/
 
 			function drawUnit(row, tile, unit) {
 				var newUnit =  new PIXI.Sprite(PIXI.Texture.fromImage('res/SunArcher.png'));
 				pixiStage.addChild(newUnit);
-				newUnit.position.x = tile * 136;
-				newUnit.position.y = row * 157;
+				newUnit.position.x = row * 136;
+				newUnit.position.y = tile * 157;
+				//addedUnits.push(newUnit);
 			}
 
 			function pushSTM() {
@@ -237,7 +248,12 @@ Chat code based on an assignment by Simon Niklaus
 				});
 			}
 
-			socketHandle.on('highlight', function(data) {
+			//End the turn when the end turn button is pressed
+			jQuery('#endturn').on('click', function() {
+					socketHandle.emit('endTurn');
+			}); 
+
+			/*socketHandle.on('highlight', function(data) {
 				console.log("Hightlighted " + data.target);
 				sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
 			});
@@ -245,7 +261,7 @@ Chat code based on an assignment by Simon Niklaus
 			socketHandle.on('unhighlight', function(data) {
 				console.log("Unhightlighted " + data.target);
 				sa.texture = PIXI.Texture.fromImage('res/SunArcher.png');
-			});
+			});*/
 
 			//Chat
 			socketHandle.on('message', function(data) {
