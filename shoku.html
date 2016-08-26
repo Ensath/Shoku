@@ -71,6 +71,15 @@ Chat code based on an assignment by Simon Niklaus
 			var mw = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonWarrior.png'));      
 			var moonIcons = [ma, mh, ms, mw];
 			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
+			//Initialize the remaining textures	
+			sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
+			sh.texture = PIXI.Texture.fromImage('res/SunHorsemanBright.png');
+			ss.texture = PIXI.Texture.fromImage('res/SunShieldbearerBright.png');
+			sw.texture = PIXI.Texture.fromImage('res/SunWarriorBright.png');
+			ma.texture = PIXI.Texture.fromImage('res/MoonArcherBright.png');
+			mh.texture = PIXI.Texture.fromImage('res/MoonHorsemanBright.png');
+			ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
+			mw.texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
 
 			//Draw the game elements
 			pixiStage.addChild(pixiBoard);
