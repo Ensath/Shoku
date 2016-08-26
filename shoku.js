@@ -20,7 +20,7 @@ var selected = null;
 var targeted = null;
 var marched = [];
 var fortified = null;
-var board = [
+var boardPieces = [
 ['.','.','.','.','.','.'],
 ['.','.','.','.','.'],
 ['.','.','.','.','.','.'],
@@ -28,6 +28,15 @@ var board = [
 ['.','.','.','.','.','.'],
 ['.','.','.','.','.'],
 ['.','.','.','.','.','.']
+]
+var boardTiles = [
+['w','f','e','w','e','e'],
+['f','w','f','a','a'],
+['w','a','w','f','e','f'],
+['s','a','e','a','e','a','m'],
+['f','e','f','w','a','w'],
+['a','a','f','w','f'],
+['e','e','w','e','f','w']
 ]
 
 io.on('connection', function(socketHandle) {
@@ -142,7 +151,7 @@ io.on('connection', function(socketHandle) {
 
 	socketHandle.on('tapBoard', function(data) {
 		if (selected === 'sa') {
-			board[data.x][data.y] = 'A';
+			boardPieces[data.x][data.y] = 'A';
 		}
 		update();
 	});
@@ -178,7 +187,7 @@ function update() {
 			'selected':selected,
 			'targeted':targeted,
 			'fortified':fortified,
-			'board':board
+			'board':boardPieces
 		});
 	}
 }
