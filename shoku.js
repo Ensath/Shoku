@@ -163,26 +163,26 @@ io.on('connection', function(socketHandle) {
 				if (data.tile > 1 || ((data.row === 1 || data.row === 5) && data.tile > 0)) {
 					return;
 				}
-				if (selectedS === 'sa') {
+				if (selectedS === 'sa' && countUnit('A') < 3) {
 					boardPieces[data.row][data.tile] = 'A';
-				} else if (selectedS === 'sh') {
+				} else if (selectedS === 'sh' && countUnit('H') < 3) {
 					boardPieces[data.row][data.tile] = 'H';
-				} else if (selectedS === 'ss') {
+				} else if (selectedS === 'ss' && countUnit('S') < 3) {
 					boardPieces[data.row][data.tile] = 'S';
-				} else if (selectedS === 'sw') {
+				} else if (selectedS === 'sw' && countUnit('W') < 3) {
 					boardPieces[data.row][data.tile] = 'W';
 				}
 			} else { 
 				if (data.tile < 4 || ((data.row === 3) && data.tile < 5)) {
 					return;
 				}
-				if (selectedM === 'ma') {
+				if (selectedM === 'ma' && countUnit('a') < 3) {
 					boardPieces[data.row][data.tile] = 'a';
-				} else if (selectedM === 'mh') {
+				} else if (selectedM === 'mh' && countUnit('h') < 3) {
 					boardPieces[data.row][data.tile] = 'h';
-				} else if (selectedM === 'ms') {
+				} else if (selectedM === 'ms' && countUnit('s') < 3) {
 					boardPieces[data.row][data.tile] = 's';
-				} else if (selectedM === 'mw') {
+				} else if (selectedM === 'mw' && countUnit('w') < 3) {
 					boardPieces[data.row][data.tile] = 'w';
 				}
 			} 
@@ -238,6 +238,18 @@ function update(army) {
 			'army':army
 		});
 	}
+}
+
+function countUnit(unit) {
+	var count = 0;
+	for (var row in boardPieces) {
+		for (var tile in boardPieces[row]) {
+			if (boardPieces[row][tile] === unit) {
+				count++;
+			}
+		}
+	}
+	return count;
 }
 
 console.log('go ahead and open "http://localhost:8080/shoku.html" in your browser');

@@ -88,7 +88,13 @@ Chat code based on an assignment by Simon Niklaus
 			sw.position.y = 1170;
 			for (var icon in moonIcons) {
 				pixiStage.addChild(moonIcons[icon]);
+				moonIcons[icon].position.y = 10;
+				moonIcons[icon].interactive = true;
 			}
+			ma.position.x = 625;
+			mh.position.x = 775;
+			ms.position.x = 1075;
+			mw.position.x = 1225;
 			pixiStage.addChild(spiritTrackMarker);
 			spiritTrackMarker.position.x = 195;
 			spiritTrackMarker.position.y = 581;
@@ -184,6 +190,30 @@ Chat code based on an assignment by Simon Niklaus
 				}
 			);
 
+			ma.on('click',
+				function () {
+					selectIcon('ma')
+				}
+			);
+
+			mh.on('click',
+				function () {
+					selectIcon('mh')
+				}
+			);
+
+			ms.on('click',
+				function () {
+					selectIcon('ms')
+				}
+			);
+
+			mw.on('click',
+				function () {
+					selectIcon('mw')
+				}
+			);
+
 			//Continuously draw the game
 			/*(function functionGameloop() {        
 				pixiRenderer.render(pixiStage);        
@@ -268,6 +298,14 @@ Chat code based on an assignment by Simon Niklaus
 					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunShieldbearer.png');
 				} else if (unit === 'W') {
 					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunWarrior.png');
+				} else if (unit === 'a') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonArcher.png');
+				} else if (unit === 'h') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonHorseman.png');
+				} else if (unit === 's') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonShieldbearer.png');
+				} else if (unit === 'w') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
 				}
 			}
 
