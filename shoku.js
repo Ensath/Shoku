@@ -16,7 +16,8 @@ var objectClients = {};
 var STM = 3;
 var armies = ['Sun', 'Moon'];
 var user = 0;
-var selected = null;
+var selectedS = null;
+var selectedM = null;
 var targeted = null;
 var marched = [];
 var fortified = null;
@@ -136,17 +137,49 @@ io.on('connection', function(socketHandle) {
 
 	socketHandle.on('selectIcon', function(data) {
 		//console.log("selectIcon running");
-		if (selected === data.icon) {
-			selected = null;
+		if (objectClients[socketHandle.id].army == 'Sun') {
+			if (selectedS === data.icon) {
+				selectedS = null;
+			} else {
+				selectedS = data.icon;
+			}
 		} else {
-			selected = data.icon;
+			if (selectedM === data.icon) {
+				selectedM = null;
+			} else {
+				selectedM = data.icon;
+			}
 		}
 		update();
 	});
 
 	socketHandle.on('tapBoard', function(data) {
-		if (selected === 'sa') {
-			boardPieces[data.row][data.tile] = 'A';
+		if (data.row < 0 || data.row > 6 || data.tile < 0 || data.tile > (5 - data.row % 2 + Math.max(0, data.row % 4 - 2) * 2)) {
+			//console.log("Clicked outside the hexes");
+			return;
+		}
+		if (currentStep === 'Deploy') {
+			if (objectClients[socketHandle.id].army == 'Sun') {
+				if (selectedS === 'sa') {
+					boardPieces[data.row][data.tile] = 'A';
+				} else if (selectedS === 'sh') {
+					boardPieces[data.row][data.tile] = 'H';
+				} else if (selectedS === 'ss') {
+					boardPieces[data.row][data.tile] = 'S';
+				} else if (selectedS === 'sw') {
+					boardPieces[data.row][data.tile] = 'W';
+				}
+			} else { 
+				if (selectedM === 'ma') {
+					boardPieces[data.row][data.tile] = 'a';
+				} else if (selectedM === 'mh') {
+					boardPieces[data.row][data.tile] = 'h';
+				} else if (selectedM === 'ms') {
+					boardPieces[data.row][data.tile] = 's';
+				} else if (selectedM === 'mw') {
+					boardPieces[data.row][data.tile] = 'w';
+				}
+			} 
 		}
 		update();
 	});
@@ -189,7 +222,8 @@ function update() {
 	for (var client in objectClients) {
 		objectClients[client].socket.emit('update', {
 			'STM':STM,
-			'selected':selected,
+			'selectedS':selectedS,
+			'selectedM':selectedM,
 			'targeted':targeted,
 			'fortified':fortified,
 			'boardPieces':boardPieces,

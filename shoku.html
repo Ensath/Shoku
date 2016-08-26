@@ -84,6 +84,24 @@ Chat code based on an assignment by Simon Niklaus
 			pixiStage.addChild(spiritTrackMarker);
 			spiritTrackMarker.position.x = 195;
 			spiritTrackMarker.position.y = 581;
+			var unitSprites = [
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.'],
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.','.','.'],
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.'],
+			['.','.','.','.','.','.']
+			];
+			for (var row in unitSprites) {
+				for (var tile in unitSprites[row]) {
+					var newUnit =  new PIXI.Sprite(PIXI.Texture.EMPTY);
+					pixiStage.addChild(newUnit);
+					newUnit.position.x = 520 + row * 136;
+					newUnit.position.y = (5 - tile) * 157 + 206 + (row%2) * -78.5 + Math.max(0, (row%4 - 2)) * 157; 
+					unitSprites[row][tile] = newUnit;
+				}
+			}
 			pixiBoard.interactive = true;
 			sa.interactive = true;
 			sh.interactive = true;
@@ -206,6 +224,7 @@ Chat code based on an assignment by Simon Niklaus
 				}
 				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.STM) * 16 + extra;
 				spiritTrackMarker.position.y = 195 * (6 - data.STM) - 3;
+				//eraseUnits();
 				for (var row in data.boardPieces) {
 					for (var tile in data.boardPieces[row]) {
 						drawUnit(row, tile, data.boardPieces[row][tile]);
@@ -213,7 +232,8 @@ Chat code based on an assignment by Simon Niklaus
 				}
 				jQuery('#player').text(data.currentPlayer);
 				jQuery('#step').text(data.currentStep);
-				//hightlight(data.selected);
+				//hightlight(data.selectedS);
+				//hightlight(data.selectedM);
 				//hightlight(data.targeted);
 				//darken(data.fortified);
 				pixiRenderer.render(pixiStage);        
@@ -223,27 +243,24 @@ Chat code based on an assignment by Simon Niklaus
 			var clearUnit;
 
 			function eraseUnits() {
-				while (addedUnits !== []) {
+				while (addedUnits.length > 0) {
 					clearUnit = addedUnits.pop();
 					clearUnit.destroy();
 				}
 			}*/
 
 			function drawUnit(row, tile, unit) {
-				var newUnit =  new PIXI.Sprite(PIXI.Texture.fromImage('res/SunArcher.png'));
-				var offset = 0;
-				if (row === 1 || row === 5) {
-					console.log("1 or 5");
-					offset -= 78.5;
+				if (unit === '.') {
+					unitSprites[row][tile].texture = PIXI.Texture.EMPTY;
+				} else if (unit === 'A') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunArcher.png');
+				} else if (unit === 'H') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunHorseman.png');
+				} else if (unit === 'S') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunShieldbearer.png');
+				} else if (unit === 'W') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunWarrior.png');
 				}
-				if (row === 3) {
-					offset += 78.5;
-				}
-				pixiStage.addChild(newUnit);
-				newUnit.position.x = 522 + row * 136;
-				newUnit.position.y = (5 - tile) * 157 + 206 + offset;
-
-				//addedUnits.push(newUnit);
 			}
 
 			function pushSTM() {
