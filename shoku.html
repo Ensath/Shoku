@@ -154,10 +154,10 @@ Chat code based on an assignment by Simon Niklaus
 			);
 
 			//Continuously draw the game
-			(function functionGameloop() {        
+			/*(function functionGameloop() {        
 				pixiRenderer.render(pixiStage);        
 				window.requestAnimationFrame(functionGameloop);      
-			})();
+			})();*/
 
 			//The following resizing code is based on code found at http://stackoverflow.com/questions/30554533/dynamically-resize-the-pixi-stage-and-its-contents-on-window-resize-and-window 
 			var ratio = 1652/1282;
@@ -211,6 +211,7 @@ Chat code based on an assignment by Simon Niklaus
 				//hightlight(data.selected);
 				//hightlight(data.targeted);
 				//darken(data.fortified);
+				pixiRenderer.render(pixiStage);        
 			});
 
 			/*var addedUnits = [];

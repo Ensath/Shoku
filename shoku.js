@@ -83,6 +83,9 @@ io.on('connection', function(socketHandle) {
 		});
 	}
 
+	//Display the initial board
+	update();
+
 	socketHandle.on('message', function(objectData) {
 		// if the message should be recevied by everyone, broadcast it accordingly
 		if(objectData.to==='everyone'){
