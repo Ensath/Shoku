@@ -309,18 +309,27 @@ function validateMove(row, tile, army) {
 		return false;
 	}
 	if (targeted[0] !== null) {
-		if (adjacent(targeted[1], targeted[2], row, tile) {
+		if (adjacent(targeted[1], targeted[2], row, tile) && boardPieces[row][tile] === '.') {
 			return true;
 		} else {
 			return false;
 		}
 	}
+	if (adjacent(selected[1], selected[2], row, tile)) {
+		return true;
+	}
 	return false;
 }
 
 function executeMove(row, tile) {
-	
-	
+	boardPieces[row][tile] = boardPieces[selected[1]][selected[2]];
+	boardPieces[selected[1]][selected[2]] = '.';
+	selected[0] = null;
+	selected[1] = null;
+	selected[2] = null;
+	targeted[0] = null;
+	targeted[1] = null;
+	targeted[2] = null;
 }
 
 function validateTarget(row, tile, army) {
@@ -336,10 +345,43 @@ function validateSelection(row, tile, army) {
 }
 
 function adjacent(r1, t1, r2, t2) {
-	if (r1 === r2 && Math.abs(t1-t2) = 1) {
+	if (r1 === r2 && Math.abs(t1-t2) === 1) {
 		return true;
 	}
-	//still needs more
+	if (Math.abs(r1-r2) === 1) {
+		if (r1 === 0 || r1 === 3 || r1 === 6) {
+			if (t1 === t2 || t1 === t2 + 1) {
+				return true;
+			}
+		}
+		if (r1 === 1 || r1 === 5) {
+			if (t1 === t2 || t1 === t2 - 1) {
+				return true;
+			}
+		}
+		if (r1 === 2) {
+			if (r2 === 1) {
+				if (t1 === t2 || t1 === t2 + 1) {
+					return true;
+				}
+			} else {
+				if (t1 === t2 || t1 === t2 - 1) {
+					return true;
+				}
+			}
+		}
+		if (r1 === 4) {
+			if (r2 === 5) {
+				if (t1 === t2 || t1 === t2 + 1) {
+					return true;
+				}
+			} else {
+				if (t1 === t2 || t1 === t2 - 1) {
+					return true;
+				}
+			}
+		}
+	}
 	return false;
 }
 
