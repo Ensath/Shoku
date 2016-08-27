@@ -122,7 +122,7 @@ io.on('connection', function(socketHandle) {
 	});
 
 	socketHandle.on('pushSTM', function() {
-		if (currentStep !== 'Pray' && currentStep !== 'Rearm') {
+		if (currentStep !== 'Pray' && currentStep !== 'Rearm and Pray') {
 			return;
 		}
 		if (objectClients[socketHandle.id].army == 'Sun') {
@@ -144,17 +144,41 @@ io.on('connection', function(socketHandle) {
 
 	socketHandle.on('selectIcon', function(data) {
 		//console.log("selectIcon running");
-		if (objectClients[socketHandle.id].army == 'Sun') {
-			if (selectedS[0] === data.icon) {
-				selectedS[0] = null;
+		if (currentStep === 'Deploy') {
+			if (objectClients[socketHandle.id].army == 'Sun') {
+				if (selectedS[0] === data.icon) {
+					selectedS[0] = null;
+				} else {
+					selectedS[0] = data.icon;
+				}
 			} else {
-				selectedS[0] = data.icon;
+				if (selectedM[0] === data.icon) {
+					selectedM[0] = null;
+				} else {
+					selectedM[0] = data.icon;
+				}
 			}
-		} else {
-			if (selectedM[0] === data.icon) {
-				selectedM[0] = null;
+		} else if (currentStep === 'Rearm and Pray' && currentPlayer === objectClients[socketHandle.id].army) {
+			if (currentPlayer === 'Sun') {
+				if (data.icon === 'sa' && countUnit('A') < 3) {
+					boardPieces[3][0] = 'A';
+				} else if (data.icon === 'sh' && countUnit('H') < 3) {
+					boardPieces[3][0] = 'H';
+				} else if (data.icon === 'ss' && countUnit('S') < 3) {
+					boardPieces[3][0] = 'S';
+				} else if (data.icon === 'sw' && countUnit('W') < 3) {
+					boardPieces[3][0] = 'W';
+				}
 			} else {
-				selectedM[0] = data.icon;
+				if (data.icon === 'ma' && countUnit('a') < 3) {
+					boardPieces[3][6] = 'a';
+				} else if (data.icon === 'mh' && countUnit('h') < 3) {
+					boardPieces[3][6] = 'h';
+				} else if (data.icon === 'ms' && countUnit('s') < 3) {
+					boardPieces[3][6] = 's';
+				} else if (data.icon === 'mw' && countUnit('w') < 3) {
+					boardPieces[3][6] = 'w';
+				}
 			}
 		}
 		update();
@@ -221,7 +245,7 @@ io.on('connection', function(socketHandle) {
 				targeted[1] = null;
 				targeted[2] = null;
 			}
-		}
+		} 
 		update();
 	});
 
@@ -355,7 +379,7 @@ function executeMove(row, tile) {
 	if (winner() !== 'none') {
 		currentStep = winner();
 	} else if (/[sm]/.test(boardTiles[row][tile])) {
-		currentStep = 'Rearm';
+		currentStep = 'Rearm and Pray';
 	} else {
 		currentStep = 'Pray';
 	}
@@ -431,7 +455,7 @@ function winner() {
 	if (/[A-W]/.test(boardPieces[3][6]) || ((countUnit('a') + countUnit('h') + countUnit('s') + countUnit('w')) === 0)) { 
 		sunWin = true;
 	}
-	if (/[a-w]/.test(boardPieces[3][0]) || ((countUnit('a') + countUnit('h') + countUnit('s') + countUnit('w')) === 0)) { 
+	if (/[a-w]/.test(boardPieces[3][0]) || ((countUnit('A') + countUnit('H') + countUnit('S') + countUnit('W')) === 0)) { 
 		moonWin = true;
 	}
 	if (sunWin && moonWin) {
