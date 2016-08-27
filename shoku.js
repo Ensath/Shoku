@@ -336,6 +336,9 @@ function executeMove(row, tile) {
 		boardPieces[row][tile] = boardPieces[targeted[1]][targeted[2]];
 		boardPieces[targeted[1]][targeted[2]] = boardPieces[selected[1]][selected[2]];
 	} else {
+		if(/[sm]/.test(boardTiles[row][tile]) && boardPieces[row][tile] !== '.') {
+			boardPieces[selected[1]][selected[2]] = '.';
+		} 
 		boardPieces[row][tile] = boardPieces[selected[1]][selected[2]];
 	}
 	boardPieces[selected[1]][selected[2]] = '.';
@@ -345,6 +348,13 @@ function executeMove(row, tile) {
 	targeted[0] = null;
 	targeted[1] = null;
 	targeted[2] = null;
+	if (winner() !== 'none') {
+		currentStep = winner();
+	} else if (/[sm]/.test(boardTiles[row][tile])) {
+		currentStep = 'Rearm';
+	} else {
+		currentStep = 'Pray';
+	}
 }
 
 function validateTarget(row, tile, army) {
@@ -409,6 +419,27 @@ function adjacent(r1, t1, r2, t2) {
 		}
 	}
 	return false;
+}
+
+function winner() {
+	var sunWin = false;
+	var moonWin = false;
+	if (/[A-W]/.test(boardPieces[3][6]) || ((countUnit('a') + countUnit('h') + countUnit('s') + countUnit('w')) === 0)) { 
+		sunWin = true;
+	}
+	if (/[a-w]/.test(boardPieces[3][0]) || ((countUnit('a') + countUnit('h') + countUnit('s') + countUnit('w')) === 0)) { 
+		moonWin = true;
+	}
+	if (sunWin && moonWin) {
+		return 'Draw';
+	}
+	if (sunWin) {
+		return 'Sun Victory';
+	}
+	if (moonWin) {
+		return 'Moon Victory';
+	}
+	return 'none';
 }
 
 console.log('go ahead and open "http://localhost:8080/shoku.html" in your browser');
