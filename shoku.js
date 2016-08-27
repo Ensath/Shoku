@@ -193,6 +193,7 @@ io.on('connection', function(socketHandle) {
 			targeted[0] = null;
 			targeted[1] = null;
 			targeted[2] = null;
+			update();
 			return;
 		}
 		if (currentStep === 'Deploy') {
@@ -276,6 +277,14 @@ io.on('connection', function(socketHandle) {
 		targeted[0] = null;
 		targeted[1] = null;
 		targeted[2] = null;
+		if (marched.length > 0) {
+			fortified = marched.pop();
+		} else {
+			fortified = [null, null, null];
+		}
+		while (marched.length > 0) {
+			marched.pop();
+		}
 		update();
 	});
 
@@ -362,6 +371,12 @@ function validateMove(row, tile, army) {
 function executeMove(row, tile) {
 	if (targeted[0] !== null) {
 		boardPieces[row][tile] = boardPieces[targeted[1]][targeted[2]];
+		for (var unit in marched) {
+			if (marched[unit][1] === targeted[1] && marched[unit][2] === targeted[2]) {
+				marched[unit][1] = row;
+				marched[unit][2] = tile;
+			}
+		}
 		boardPieces[targeted[1]][targeted[2]] = boardPieces[selected[1]][selected[2]];
 	} else {
 		if(/[sm]/.test(boardTiles[row][tile]) && boardPieces[row][tile] !== '.') {
@@ -372,10 +387,10 @@ function executeMove(row, tile) {
 	boardPieces[selected[1]][selected[2]] = '.';
 	if (winner() !== 'none') {
 		currentStep = winner();
-	} else if (/[sm]/.test(boardTiles[row][tile])) {
+	} else if ((/[s]/.test(boardTiles[row][tile]) && currentPlayer === 'Sun') || (/[m]/.test(boardTiles[row][tile]) && currentPlayer === 'Moon')) {
 		currentStep = 'Rearm and Pray';
 	} else if (targeted[0] !== null) {
-		if (/[sm]/.test(boardTiles[targeted[1]][targeted[2]])) {
+		if ((/[s]/.test(boardTiles[targeted[1]][targeted[2]]) && currentPlayer === 'Sun') || (/[m]/.test(boardTiles[targeted[1]][targeted[2]]) && currentPlayer === 'Moon')) {
 			currentStep = 'Rearm and Pray';
 		} else {
 			currentStep = 'Pray';	
@@ -383,6 +398,17 @@ function executeMove(row, tile) {
 	} else {
 		currentStep = 'Pray';
 	}
+	var marchedUnit = [null, null, null];
+	if (targeted[0] !== null) {
+		marchedUnit[0] = selected[0];
+		marchedUnit[1] = targeted[1];
+		marchedUnit[2] = targeted[2];
+	} else {
+		marchedUnit[0] = selected[0];
+		marchedUnit[1] = row;
+		marchedUnit[2] = tile;
+	}
+	marched.push(marchedUnit);
 	selected[0] = null;
 	selected[1] = null;
 	selected[2] = null;
@@ -409,6 +435,11 @@ function validateTarget(row, tile, army) {
 
 function validateSelection(row, tile, army) {
 	if (((/[A-W]/.test(boardPieces[row][tile])) && army === 'Sun') || ((/[a-w]/.test(boardPieces[row][tile])) && army === 'Moon')) {
+		for (var unit in marched) {
+			if (marched[unit][1] === row && marched[unit][2] === tile) {
+				return false;
+			}
+		}
 		return true;
 	}
 	return false;
