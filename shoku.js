@@ -122,6 +122,9 @@ io.on('connection', function(socketHandle) {
 	});
 
 	socketHandle.on('pushSTM', function() {
+		if (currentStep !== 'Pray' && currentStep !== 'Rearm') {
+			return;
+		}
 		if (objectClients[socketHandle.id].army == 'Sun') {
 			if (STM < 5) { 
 				STM++;
@@ -135,6 +138,7 @@ io.on('connection', function(socketHandle) {
 				return;
 			}
 		}
+		currentStep = 'March';
 		update();
 	});
 
