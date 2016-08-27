@@ -316,13 +316,20 @@ function validateMove(row, tile, army) {
 		}
 	}
 	if (adjacent(selected[1], selected[2], row, tile)) {
-		return true;
+		if (boardPieces[row][tile] === '.') {
+			return true;
+		}
 	}
 	return false;
 }
 
 function executeMove(row, tile) {
-	boardPieces[row][tile] = boardPieces[selected[1]][selected[2]];
+	if (targeted[0] !== null) {
+		boardPieces[row][tile] = boardPieces[targeted[1]][targeted[2]];
+		boardPieces[targeted[1]][targeted[2]] = boardPieces[selected[1]][selected[2]];
+	} else {
+		boardPieces[row][tile] = boardPieces[selected[1]][selected[2]];
+	}
 	boardPieces[selected[1]][selected[2]] = '.';
 	selected[0] = null;
 	selected[1] = null;
@@ -333,12 +340,23 @@ function executeMove(row, tile) {
 }
 
 function validateTarget(row, tile, army) {
+	if (adjacent(selected[1], selected[2], row, tile)) {
+		if (selected[0] === 'A' || selected[0] === 'a' || boardTiles[row][tile] === 'w') {
+			if (((/[A-W]/.test(boardPieces[row][tile])) && army === 'Moon') || ((/[a-w]/.test(boardPieces[row][tile])) && army === 'Sun')) {
+				return true;
+			}
+		}
+		if (selected[0] === 'H' || selected[0] === 'h' || boardTiles[row][tile] === 'a') {
+			if (((/[A-W]/.test(boardPieces[row][tile])) && army === 'Sun') || ((/[a-w]/.test(boardPieces[row][tile])) && army === 'Moon')) {
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 function validateSelection(row, tile, army) {
 	if (((/[A-W]/.test(boardPieces[row][tile])) && army === 'Sun') || ((/[a-w]/.test(boardPieces[row][tile])) && army === 'Moon')) {
-		//console.log('Valid selection');
 		return true;
 	}
 	return false;
