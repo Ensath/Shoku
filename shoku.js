@@ -319,6 +319,14 @@ function validateMove(row, tile, army) {
 		if (boardPieces[row][tile] === '.') {
 			return true;
 		}
+		if (((/[A-W]/.test(boardPieces[row][tile])) && army === 'Moon') || ((/[a-w]/.test(boardPieces[row][tile])) && army === 'Sun')) {
+			if (/[fsm]/.test(boardTiles[row][tile])) {
+				return true;
+			}
+			if ((/[Ww]/.test(selected[0])) && !(/[Ss]/.test(boardPieces[row][tile])) && !(/[e]/.test(boardTiles[row][tile]))) {
+				return true;
+			}
+		}
 	}
 	return false;
 }
