@@ -186,6 +186,8 @@ io.on('connection', function(socketHandle) {
 					boardPieces[data.row][data.tile] = 'w';
 				}
 			} 
+		} else if (currentStep === 'March') {
+
 		}
 		update(objectClients[socketHandle.id].army);
 	});
@@ -224,7 +226,7 @@ io.on('connection', function(socketHandle) {
 	});
 });
 
-function update(army) {
+function update(updateSource) {
 	for (var client in objectClients) {
 		objectClients[client].socket.emit('update', {
 			'STM':STM,
@@ -235,7 +237,7 @@ function update(army) {
 			'boardPieces':boardPieces,
 			'currentPlayer':currentPlayer,
 			'currentStep':currentStep,
-			'army':army
+			'army':objectClients[client].army
 		});
 	}
 }

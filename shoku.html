@@ -41,7 +41,7 @@ Chat code based on an assignment by Simon Niklaus
 			<h2 id="player">None</h2>
 			<h3>Current Step</h3>
 			<h2 id="step">Deploy</h2>
-			<input id="endturn" type="button" value="Fortify and end turn">
+			<input id="endturn" type="button" value="Finish deployment">
 		</div>
 		<canvas id="board" class="floatl"></canvas>
 		<div id="chat" class="floatl sidebar">
@@ -291,6 +291,14 @@ Chat code based on an assignment by Simon Niklaus
 				highlight(data.selectedM);
 				highlight(data.targeted);
 				//darken(data.fortified);
+				if (data.currentStep !== "Deploy") {
+					jQuery('#endturn').val("Fortify and end turn");
+					if (data.currentPlayer !== data.army) {
+						jQuery('#endturn').prop('disabled',true);
+					} else {
+						jQuery('#endturn').prop('disabled',false);
+					}
+				}
 				//pixiRenderer.render(pixiStage);        
 			});
 
