@@ -370,19 +370,25 @@ function executeMove(row, tile) {
 		boardPieces[row][tile] = boardPieces[selected[1]][selected[2]];
 	}
 	boardPieces[selected[1]][selected[2]] = '.';
+	if (winner() !== 'none') {
+		currentStep = winner();
+	} else if (/[sm]/.test(boardTiles[row][tile])) {
+		currentStep = 'Rearm and Pray';
+	} else if (targeted[0] !== null) {
+		if (/[sm]/.test(boardTiles[targeted[1]][targeted[2]])) {
+			currentStep = 'Rearm and Pray';
+		} else {
+			currentStep = 'Pray';	
+		}
+	} else {
+		currentStep = 'Pray';
+	}
 	selected[0] = null;
 	selected[1] = null;
 	selected[2] = null;
 	targeted[0] = null;
 	targeted[1] = null;
 	targeted[2] = null;
-	if (winner() !== 'none') {
-		currentStep = winner();
-	} else if (/[sm]/.test(boardTiles[row][tile])) {
-		currentStep = 'Rearm and Pray';
-	} else {
-		currentStep = 'Pray';
-	}
 }
 
 function validateTarget(row, tile, army) {
