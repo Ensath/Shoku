@@ -18,6 +18,7 @@ var armies = ['Sun', 'Moon'];
 var user = 0;
 var selectedS = [null, null, null];
 var selectedM = [null, null, null];
+var selected = [null, null, null];
 var targeted = [null, null, null];
 var marched = [];
 var fortified = [null, null, null];
@@ -41,6 +42,8 @@ var boardTiles = [
 ];
 var currentPlayer = 'None';
 var currentStep = 'Deploy';
+var sunReady = false;
+var moonReady = false;
 
 io.on('connection', function(socketHandle) {
 	// assign a random id to the socket and store the socketHandle in the objectClients variable - example: '9T1P4pUQ'
@@ -85,7 +88,7 @@ io.on('connection', function(socketHandle) {
 	}
 
 	//Display the initial board
-	update(objectClients[socketHandle.id].army);
+	update();
 
 	socketHandle.on('message', function(objectData) {
 		// if the message should be recevied by everyone, broadcast it accordingly
@@ -132,7 +135,7 @@ io.on('connection', function(socketHandle) {
 				return;
 			}
 		}
-		update(objectClients[socketHandle.id].army);
+		update();
 	});
 
 	socketHandle.on('selectIcon', function(data) {
@@ -150,7 +153,7 @@ io.on('connection', function(socketHandle) {
 				selectedM[0] = data.icon;
 			}
 		}
-		update(objectClients[socketHandle.id].army);
+		update();
 	});
 
 	socketHandle.on('tapBoard', function(data) {
@@ -186,20 +189,54 @@ io.on('connection', function(socketHandle) {
 					boardPieces[data.row][data.tile] = 'w';
 				}
 			} 
-		} else if (currentStep === 'March') {
-
+		} else if (currentStep === 'March' && currentPlayer === objectClients[socketHandle.id].army) {
+			if (validateMove(data.row, data.tile)) {
+				executeMove(data.row, data.tile);
+			} else if (validateTarget(data.row, data.tile)) {
+				targeted[0] = null;
+				targeted[1] = data.row;
+				targeted[2] = data.tile;
+			} else if (validateSelection(data.row, data.tile)) {
+				selected[0] = null;
+				selected[1] = data.row;
+				selected[2] = data.tile;
+				targeted[0] = null;
+				targeted[1] = null;
+				targeted[2] = null;
+			} else {
+				selected[0] = null;
+				selected[1] = null;
+				selected[2] = null;
+				targeted[0] = null;
+				targeted[1] = null;
+				targeted[2] = null;
+			}
 		}
-		update(objectClients[socketHandle.id].army);
+		update();
 	});
 
 	socketHandle.on('endTurn', function() {
+		if (currentStep === "Deploy") {
+			if (objectClients[socketHandle.id].army === "Sun") {
+				sunReady = true;
+			} else {
+				moonReady = true;
+			}
+			if (!sunReady || !moonReady) {
+				update();
+				return;
+			} else {
+				selectedS[0] = null;
+				selectedM[0] = null;
+			}
+		}
 		if (currentPlayer === "Sun") {
 			currentPlayer = "Moon";
 		} else {
 			currentPlayer = "Sun";
 		}
 		currentStep = "March";
-		update(objectClients[socketHandle.id].army);
+		update();
 	});
 
 	socketHandle.on('disconnect', function() {
@@ -226,12 +263,13 @@ io.on('connection', function(socketHandle) {
 	});
 });
 
-function update(updateSource) {
+function update() {
 	for (var client in objectClients) {
 		objectClients[client].socket.emit('update', {
 			'STM':STM,
 			'selectedS':selectedS,
 			'selectedM':selectedM,
+			'selected':selected,
 			'targeted':targeted,
 			'fortified':fortified,
 			'boardPieces':boardPieces,
@@ -252,6 +290,22 @@ function countUnit(unit) {
 		}
 	}
 	return count;
+}
+
+function validateMove(row, tile) {
+	return false;
+}
+
+function executeMove(row, tile) {
+	
+}
+
+function validateTarget(row, tile) {
+	return false;
+}
+
+function validateSelection(row, tile) {
+	return false;
 }
 
 console.log('go ahead and open "http://localhost:8080/shoku.html" in your browser');
