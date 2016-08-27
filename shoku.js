@@ -305,10 +305,21 @@ function countUnit(unit) {
 }
 
 function validateMove(row, tile, army) {
+	if (selected[0] === null) {
+		return false;
+	}
+	if (targeted[0] !== null) {
+		if (adjacent(targeted[1], targeted[2], row, tile) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	return false;
 }
 
 function executeMove(row, tile) {
+	
 	
 }
 
@@ -321,6 +332,14 @@ function validateSelection(row, tile, army) {
 		//console.log('Valid selection');
 		return true;
 	}
+	return false;
+}
+
+function adjacent(r1, t1, r2, t2) {
+	if (r1 === r2 && Math.abs(t1-t2) = 1) {
+		return true;
+	}
+	//still needs more
 	return false;
 }
 
