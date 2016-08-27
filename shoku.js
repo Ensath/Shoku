@@ -159,6 +159,12 @@ io.on('connection', function(socketHandle) {
 	socketHandle.on('tapBoard', function(data) {
 		if (data.row < 0 || data.row > 6 || data.tile < 0 || data.tile > (5 - data.row % 2 + Math.max(0, data.row % 4 - 2) * 2)) {
 			//console.log("Clicked outside the hexes");
+			selected[0] = null;
+			selected[1] = null;
+			selected[2] = null;
+			targeted[0] = null;
+			targeted[1] = null;
+			targeted[2] = null;
 			return;
 		}
 		if (currentStep === 'Deploy') {
@@ -190,14 +196,14 @@ io.on('connection', function(socketHandle) {
 				}
 			} 
 		} else if (currentStep === 'March' && currentPlayer === objectClients[socketHandle.id].army) {
-			if (validateMove(data.row, data.tile)) {
+			if (validateMove(data.row, data.tile, objectClients[socketHandle.id].army)) {
 				executeMove(data.row, data.tile);
-			} else if (validateTarget(data.row, data.tile)) {
-				targeted[0] = null;
+			} else if (validateTarget(data.row, data.tile, objectClients[socketHandle.id].army)) {
+				targeted[0] = boardPieces[data.row][data.tile];
 				targeted[1] = data.row;
 				targeted[2] = data.tile;
-			} else if (validateSelection(data.row, data.tile)) {
-				selected[0] = null;
+			} else if (validateSelection(data.row, data.tile, objectClients[socketHandle.id].army)) {
+				selected[0] = boardPieces[data.row][data.tile];
 				selected[1] = data.row;
 				selected[2] = data.tile;
 				targeted[0] = null;
@@ -236,6 +242,12 @@ io.on('connection', function(socketHandle) {
 			currentPlayer = "Sun";
 		}
 		currentStep = "March";
+		selected[0] = null;
+		selected[1] = null;
+		selected[2] = null;
+		targeted[0] = null;
+		targeted[1] = null;
+		targeted[2] = null;
 		update();
 	});
 
@@ -292,7 +304,7 @@ function countUnit(unit) {
 	return count;
 }
 
-function validateMove(row, tile) {
+function validateMove(row, tile, army) {
 	return false;
 }
 
@@ -300,11 +312,15 @@ function executeMove(row, tile) {
 	
 }
 
-function validateTarget(row, tile) {
+function validateTarget(row, tile, army) {
 	return false;
 }
 
-function validateSelection(row, tile) {
+function validateSelection(row, tile, army) {
+	if (((/[A-W]/.test(boardPieces[row][tile])) && army === 'Sun') || ((/[a-w]/.test(boardPieces[row][tile])) && army === 'Moon')) {
+		//console.log('Valid selection');
+		return true;
+	}
 	return false;
 }
 

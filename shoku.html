@@ -289,6 +289,7 @@ Chat code based on an assignment by Simon Niklaus
 				mw.texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
 				highlight(data.selectedS);
 				highlight(data.selectedM);
+				highlight(data.selected);
 				highlight(data.targeted);
 				//darken(data.fortified);
 				if (data.currentStep !== "Deploy") {
@@ -351,6 +352,22 @@ Chat code based on an assignment by Simon Niklaus
 					ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
 				} else if (data[0] === "mw") {
 					mw.texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
+				} else if (data[0] === "A") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
+				} else if (data[0] === "H") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/SunHorsemanBright.png');
+				} else if (data[0] === "S") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/SunShieldbearerBright.png');
+				} else if (data[0] === "W") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/SunWarriorBright.png');
+				} else if (data[0] === "a") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonArcherBright.png');
+				} else if (data[0] === "h") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonHorsemanBright.png');
+				} else if (data[0] === "s") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
+				} else if (data[0] === "w") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
 				}
 			}
 
