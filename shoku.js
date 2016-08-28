@@ -1,4 +1,5 @@
-//Code based on an assignment created by Simon Niklaus
+//Copyright (c) 2016 Noah Freed
+//Chat code based on an assignment by Simon Niklaus
 'use strict';
 
 var express = require('express'); // do not change this line
