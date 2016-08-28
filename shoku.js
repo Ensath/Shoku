@@ -83,7 +83,7 @@ io.on('connection', function(socketHandle) {
 		objectClients[client].socket.emit('message', {
 			'from':'Server',
 			'to':'everyone',
-			'message': source + ' the Army of the ' + objectClients[socketHandle.id].army
+			'message': source + ' the Army of the ' + objectClients[socketHandle.id].army + '.'
 		});
 	}
 
@@ -262,8 +262,22 @@ io.on('connection', function(socketHandle) {
 		if (currentStep === "Deploy") {
 			if (objectClients[socketHandle.id].army === "Sun") {
 				sunReady = true;
+				for (var client in objectClients) {
+					objectClients[client].socket.emit('message', {
+						'from':'Server',
+						'to':'everyone',
+						'message':'The Army of the Sun is deployed.'
+					});
+				}
 			} else {
 				moonReady = true;
+				for (var client in objectClients) {
+					objectClients[client].socket.emit('message', {
+						'from':'Server',
+						'to':'everyone',
+						'message':'The Army of the Moon is deployed.'
+					});
+				}
 			}
 			if (!sunReady || !moonReady) {
 				update();
