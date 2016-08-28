@@ -478,6 +478,9 @@ function executeMove(row, tile) {
 		marchedUnit[2] = tile;
 	}
 	marched.push(marchedUnit);
+	if (fortified[1] === row && fortified[2] === tile) {
+		fortified = [null, null, null];
+	}
 	selected[0] = null;
 	selected[1] = null;
 	selected[2] = null;
