@@ -171,7 +171,7 @@ io.on('connection', function(socketHandle) {
 					boardPieces[3][0] = 'W';
 				}
 				if (cityUnit !== boardPieces[3][0]) {
-					marched.unshift(boardPieces[3][0], 3, 0);
+					marched.unshift([boardPieces[3][0], 3, 0]);
 				}
 			} else {
 				var cityUnit = boardPieces[3][6];
@@ -185,7 +185,7 @@ io.on('connection', function(socketHandle) {
 					boardPieces[3][6] = 'w';
 				}
 				if (cityUnit !== boardPieces[3][6]) {
-					marched.unshift(boardPieces[3][6], 3, 6);
+					marched.unshift([boardPieces[3][6], 3, 6]);
 				}
 			}
 		}
