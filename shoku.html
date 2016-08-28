@@ -72,6 +72,7 @@ Chat code based on an assignment by Simon Niklaus
 			var mw = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonWarrior.png'));      
 			var moonIcons = [ma, mh, ms, mw];
 			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
+
 			//Initialize the remaining textures	
 			sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
 			sh.texture = PIXI.Texture.fromImage('res/SunHorsemanBright.png');
@@ -170,7 +171,6 @@ Chat code based on an assignment by Simon Niklaus
 			//Push the spirit track market when clicked
 			spiritTrackMarker.on('click',
 				function () {
-					//console.log("Push the STM");
 					pushSTM();
 				}
 			);
@@ -272,7 +272,6 @@ Chat code based on an assignment by Simon Niklaus
 				}
 				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.STM) * 16 + extra;
 				spiritTrackMarker.position.y = 195 * (6 - data.STM) - 3;
-				//eraseUnits();
 				for (var row in data.boardPieces) {
 					for (var tile in data.boardPieces[row]) {
 						drawUnit(row, tile, data.boardPieces[row][tile]);
@@ -302,18 +301,7 @@ Chat code based on an assignment by Simon Niklaus
 						jQuery('#endturn').prop('disabled',false);
 					}
 				}
-				//pixiRenderer.render(pixiStage);        
 			});
-
-			/*var addedUnits = [];
-			var clearUnit;
-
-			function eraseUnits() {
-				while (addedUnits.length > 0) {
-					clearUnit = addedUnits.pop();
-					clearUnit.destroy();
-				}
-			}*/
 
 			function drawUnit(row, tile, unit) {
 				if (unit === '.') {
@@ -408,16 +396,6 @@ Chat code based on an assignment by Simon Niklaus
 			jQuery('#endturn').on('click', function() {
 					socketHandle.emit('endTurn');
 			}); 
-
-			/*socketHandle.on('highlight', function(data) {
-				console.log("Hightlighted " + data.target);
-				sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
-			});
-
-			socketHandle.on('unhighlight', function(data) {
-				console.log("Unhightlighted " + data.target);
-				sa.texture = PIXI.Texture.fromImage('res/SunArcher.png');
-			});*/
 
 			//Chat
 			socketHandle.on('message', function(data) {
