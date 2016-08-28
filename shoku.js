@@ -160,6 +160,7 @@ io.on('connection', function(socketHandle) {
 			}
 		} else if (currentStep === 'Rearm and Pray' && currentPlayer === objectClients[socketHandle.id].army) {
 			if (currentPlayer === 'Sun') {
+				var cityUnit = boardPieces[3][0];
 				if (data.icon === 'sa' && countUnit('A') < 3) {
 					boardPieces[3][0] = 'A';
 				} else if (data.icon === 'sh' && countUnit('H') < 3) {
@@ -169,7 +170,11 @@ io.on('connection', function(socketHandle) {
 				} else if (data.icon === 'sw' && countUnit('W') < 3) {
 					boardPieces[3][0] = 'W';
 				}
+				if (cityUnit !== boardPieces[3][0]) {
+					marched.unshift(boardPieces[3][0], 3, 0);
+				}
 			} else {
+				var cityUnit = boardPieces[3][6];
 				if (data.icon === 'ma' && countUnit('a') < 3) {
 					boardPieces[3][6] = 'a';
 				} else if (data.icon === 'mh' && countUnit('h') < 3) {
@@ -178,6 +183,9 @@ io.on('connection', function(socketHandle) {
 					boardPieces[3][6] = 's';
 				} else if (data.icon === 'mw' && countUnit('w') < 3) {
 					boardPieces[3][6] = 'w';
+				}
+				if (cityUnit !== boardPieces[3][6]) {
+					marched.unshift(boardPieces[3][6], 3, 6);
 				}
 			}
 		}
@@ -421,7 +429,9 @@ function validateTarget(row, tile, army) {
 	if (adjacent(selected[1], selected[2], row, tile)) {
 		if (selected[0] === 'A' || selected[0] === 'a' || boardTiles[row][tile] === 'w') {
 			if (((/[A-W]/.test(boardPieces[row][tile])) && army === 'Moon') || ((/[a-w]/.test(boardPieces[row][tile])) && army === 'Sun')) {
-				return true;
+				if (row !== fortified[1] || tile !== fortified[2]) {
+					return true;
+				}
 			}
 		}
 		if (selected[0] === 'H' || selected[0] === 'h' || boardTiles[row][tile] === 'a') {

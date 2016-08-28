@@ -288,11 +288,12 @@ Chat code based on an assignment by Simon Niklaus
 				mh.texture = PIXI.Texture.fromImage('res/MoonHorseman.png');
 				ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearer.png');
 				mw.texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
+				normalize();
+				darken(data.fortified);
 				highlight(data.selectedS);
 				highlight(data.selectedM);
 				highlight(data.selected);
 				highlight(data.targeted);
-				darken(data.fortified);
 				if (data.currentStep !== "Deploy") {
 					jQuery('#endturn').val("Fortify and end turn");
 					if (data.currentPlayer !== data.army) {
@@ -369,6 +370,14 @@ Chat code based on an assignment by Simon Niklaus
 					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
 				} else if (data[0] === "w") {
 					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
+				}
+			}
+
+			function normalize() {
+				for (var row in unitSprites) {
+					for (var tile in unitSprites[row]) {
+						unitSprites[row][tile].tint = 0xFFFFFF;
+					}
 				}
 			}
 
