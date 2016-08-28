@@ -322,18 +322,79 @@ io.on('connection', function(socketHandle) {
 
 function update() {
 	for (var client in objectClients) {
-		objectClients[client].socket.emit('update', {
-			'STM':STM,
-			'selectedS':selectedS,
-			'selectedM':selectedM,
-			'selected':selected,
-			'targeted':targeted,
-			'fortified':fortified,
-			'boardPieces':boardPieces,
-			'currentPlayer':currentPlayer,
-			'currentStep':currentStep,
-			'army':objectClients[client].army
-		});
+		if (currentStep === 'Deploy') {
+			if (objectClients[client].army === 'Sun') {
+				var sunDisplay = [
+					['.','.','.','.','.','.'],
+					['.','.','.','.','.'],
+					['.','.','.','.','.','.'],
+					['.','.','.','.','.','.','.'],
+					['.','.','.','.','.','.'],
+					['.','.','.','.','.'],
+					['.','.','.','.','.','.']
+					];
+				for (var row in boardPieces) {
+					sunDisplay[row][0] = boardPieces[row][0];
+					sunDisplay[row][1] = boardPieces[row][1];
+				}
+				objectClients[client].socket.emit('update', {
+					'STM':STM,
+					'selectedS':selectedS,
+					'selectedM':selectedM,
+					'selected':selected,
+					'targeted':targeted,
+					'fortified':fortified,
+					'boardPieces':sunDisplay,
+					'currentPlayer':currentPlayer,
+					'currentStep':currentStep,
+					'army':objectClients[client].army
+				});
+			} else { 
+				var moonDisplay = [
+					['.','.','.','.','.','.'],
+					['.','.','.','.','.'],
+					['.','.','.','.','.','.'],
+					['.','.','.','.','.','.','.'],
+					['.','.','.','.','.','.'],
+					['.','.','.','.','.'],
+					['.','.','.','.','.','.']
+					];
+				for (var row in boardPieces) {
+					for (var tile in boardPieces[row]) {
+						moonDisplay[row][tile] = boardPieces[row][tile];
+					}
+				}
+				for (var row in boardPieces) {
+					moonDisplay[row][0] = '.';
+					moonDisplay[row][1] = '.';
+				}
+				objectClients[client].socket.emit('update', {
+					'STM':STM,
+					'selectedS':selectedS,
+					'selectedM':selectedM,
+					'selected':selected,
+					'targeted':targeted,
+					'fortified':fortified,
+					'boardPieces':moonDisplay,
+					'currentPlayer':currentPlayer,
+					'currentStep':currentStep,
+					'army':objectClients[client].army
+				});
+			}
+		} else {
+			objectClients[client].socket.emit('update', {
+				'STM':STM,
+				'selectedS':selectedS,
+				'selectedM':selectedM,
+				'selected':selected,
+				'targeted':targeted,
+				'fortified':fortified,
+				'boardPieces':boardPieces,
+				'currentPlayer':currentPlayer,
+				'currentStep':currentStep,
+				'army':objectClients[client].army
+			});
+		}
 	}
 }
 
