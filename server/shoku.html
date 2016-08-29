@@ -1,0 +1,427 @@
+<!--
+Copyright (c) 2016 Noah Freed 
+Chat code based on an assignment by Simon Niklaus
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0" />
+
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+		<script type="text/javascript" src="http://75.98.169.85:8080/socket.io/socket.io.js"></script>
+
+		<script type="text/javascript"src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.11/pixi.min.js"></script>
+
+		<style>
+		  body {
+		    padding: 0;
+		    margin: 0;
+		    background-color:#0F0E0C;
+		    color:white;
+		  }
+		  pre {
+		    word-wrap: break-word;      /* IE 5.5-7 */
+		    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
+		    white-space: pre-wrap;      /* current browsers */
+		  }
+		  .center {
+		    text-align: center;
+		  }
+		  .floatl {
+		    float:left;
+		  }
+		  .sidebar {
+		    padding-left: 10px;
+		    padding-right: 10px;
+		  }
+		  .chat {
+		    width: 300px;
+		    max-width: 300px;
+		  }
+		</style>
+		<title>Shoku Online</title>
+	</head>
+	<body>
+		<div id="status" class="floatl center sidebar">
+			<img src='res/ShokuLogo.jpg'>
+			<h3>Current Player</h3>
+			<h2 id="player">None</h2>
+			<h3>Current Step</h3>
+			<h2 id="step">Deploy</h2>
+			<input id="endturn" type="button" value="Finish deployment">
+		</div>
+		<canvas id="board" class="floatl"></canvas>
+		<div id="chat" class="floatl sidebar chat">
+			<h3>Chat:</h3>
+			<input id="message" type="text" placeholder="message">
+			<input id="submit" type="button" value="submit">
+			<br>
+			<pre id="output"></pre>
+		</div>
+
+		<script type="text/javascript">
+			//Establish the game elements
+			var pixiRenderer = PIXI.autoDetectRenderer(1652, 1282, {
+				'view': document.getElementById('board'),      
+				'backgroundColor': 0x0F0E0C
+			});
+			var pixiStage = new PIXI.Container();
+			var pixiBoard = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunBoard.png'));      
+			var sa = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunArcher.png'));      
+			var sh = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunHorseman.png'));      
+			var ss = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunShieldbearer.png'));      
+			var sw = new PIXI.Sprite(PIXI.Texture.fromImage('res/SunWarrior.png'));      
+			var sunIcons = [sa, sh, ss, sw];
+			var ma = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonArcher.png'));      
+			var mh = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonHorseman.png'));      
+			var ms = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonShieldbearer.png'));      
+			var mw = new PIXI.Sprite(PIXI.Texture.fromImage('res/MoonWarrior.png'));      
+			var moonIcons = [ma, mh, ms, mw];
+			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
+
+			//Initialize the remaining textures	
+			sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
+			sh.texture = PIXI.Texture.fromImage('res/SunHorsemanBright.png');
+			ss.texture = PIXI.Texture.fromImage('res/SunShieldbearerBright.png');
+			sw.texture = PIXI.Texture.fromImage('res/SunWarriorBright.png');
+			ma.texture = PIXI.Texture.fromImage('res/MoonArcherBright.png');
+			mh.texture = PIXI.Texture.fromImage('res/MoonHorsemanBright.png');
+			ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
+			mw.texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
+
+			//Draw the game elements
+			pixiStage.addChild(pixiBoard);
+			pixiStage.addChild(sa);
+			sa.position.x = 625;
+			sa.position.y = 1170;
+			pixiStage.addChild(sh);
+			sh.position.x = 775;
+			sh.position.y = 1170;
+			pixiStage.addChild(ss);
+			ss.position.x = 1075;
+			ss.position.y = 1170;
+			pixiStage.addChild(sw);
+			sw.position.x = 1225;
+			sw.position.y = 1170;
+			for (var icon in moonIcons) {
+				pixiStage.addChild(moonIcons[icon]);
+				moonIcons[icon].position.y = 10;
+				moonIcons[icon].interactive = true;
+			}
+			ma.position.x = 625;
+			mh.position.x = 775;
+			ms.position.x = 1075;
+			mw.position.x = 1225;
+			pixiStage.addChild(spiritTrackMarker);
+			spiritTrackMarker.position.x = 195;
+			spiritTrackMarker.position.y = 581;
+			var unitSprites = [
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.'],
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.','.','.'],
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.'],
+			['.','.','.','.','.','.']
+			];
+			for (var row in unitSprites) {
+				for (var tile in unitSprites[row]) {
+					var newUnit =  new PIXI.Sprite(PIXI.Texture.EMPTY);
+					pixiStage.addChild(newUnit);
+					newUnit.position.x = 520 + row * 136;
+					newUnit.position.y = (5 - tile) * 157 + 206 + (row%2) * -78.5 + Math.max(0, (row%4 - 2)) * 157; 
+					unitSprites[row][tile] = newUnit;
+				}
+			}
+			pixiBoard.interactive = true;
+			sa.interactive = true;
+			sh.interactive = true;
+			ss.interactive = true;
+			sw.interactive = true;
+			spiritTrackMarker.interactive = true;
+
+			//The following mousedown detection code is based on code found at http://www.html5gamedevs.com/topic/14343-how-to-get-mouse-position-in-every-frame-in-v3/
+			pixiBoard.on('mousedown', mouseDownCallback);
+			function mouseDownCallback(mouseData) {  
+				console.log("X = "+mouseData.data.getLocalPosition(pixiBoard).x);  
+				console.log("Y = "+mouseData.data.getLocalPosition(pixiBoard).y);
+				var hex = getHexagon(mouseData.data.getLocalPosition(pixiBoard).x, mouseData.data.getLocalPosition(pixiBoard).y);
+				if (hex.X === 3) {
+					hex.Y = 6 - hex.Y
+				} else {
+					hex.Y = 5 - hex.Y
+				}
+				tapBoard(hex.X, hex.Y);
+			}
+
+			//Identify the tile clicked
+			function getHexagon(x, y) {
+				var minDist = 9999;
+				var hex = {};
+				hex.X = -2;
+				hex.Y = -2;
+				for (var i = -1; i < 8; i+=1) {
+					for (var j = -1; j < 8; j+=1) {
+						var distance = Math.sqrt(Math.pow((572.5 + i * 136 - x), 2) + Math.pow((182 + j * 157 + (i+1)%2*78.5 - y), 2))
+						if (distance < minDist) {
+							hex.X = i;
+							hex.Y = j;
+							minDist = distance;
+						}
+					}
+				}
+				console.log("Clicked " + minDist + " pixels away in " + hex.X + ", " + hex.Y);
+				return hex;
+			}
+
+			//Push the spirit track market when clicked
+			spiritTrackMarker.on('click',
+				function () {
+					pushSTM();
+				}
+			);
+
+			//Select a piece icon when clicked
+			sa.on('click',
+				function () {
+					selectIcon('sa')
+				}
+			);
+
+			sh.on('click',
+				function () {
+					selectIcon('sh')
+				}
+			);
+
+			ss.on('click',
+				function () {
+					selectIcon('ss')
+				}
+			);
+
+			sw.on('click',
+				function () {
+					selectIcon('sw')
+				}
+			);
+
+			ma.on('click',
+				function () {
+					selectIcon('ma')
+				}
+			);
+
+			mh.on('click',
+				function () {
+					selectIcon('mh')
+				}
+			);
+
+			ms.on('click',
+				function () {
+					selectIcon('ms')
+				}
+			);
+
+			mw.on('click',
+				function () {
+					selectIcon('mw')
+				}
+			);
+
+			//Continuously draw the game
+			(function functionGameloop() {        
+				pixiRenderer.render(pixiStage);        
+				window.requestAnimationFrame(functionGameloop);      
+			})();
+
+			//The following resizing code is based on code found at http://stackoverflow.com/questions/30554533/dynamically-resize-the-pixi-stage-and-its-contents-on-window-resize-and-window 
+			var ratio = 1652/1282;
+			resize();
+			function resize() {
+				var sidebarW = document.getElementById("status").offsetWidth + document.getElementById("chat").offsetWidth + 1;
+				var availW = window.innerWidth - sidebarW;
+				if (availW < document.getElementById("status").offsetWidth) {
+					availW = document.getElementById("status").offsetWidth;
+				}
+				if (availW < 290) {
+					availW = 290;
+				}
+			    if (availW / window.innerHeight >= ratio) {
+				var w = window.innerHeight * ratio;
+				var h = window.innerHeight;
+			    } else {
+				var w = availW;
+				var h = availW / ratio;
+			    }
+			    pixiRenderer.view.style.width = w + 'px';
+			    pixiRenderer.view.style.height = h + 'px';
+			}
+			window.onresize = resize;  
+
+			//Establish communication with the server
+			var socketHandle = io.connect('http://75.98.169.85:8080/');
+
+			var strIdent = '';
+
+			socketHandle.on('hello', function(data) {
+				strIdent = data.id;
+			});
+
+			//Send and receive game state changes
+			socketHandle.on('update', function(data) {
+				console.log(data.boardPieces);
+				var extra = 0;
+				if (data.STM < 2 || data.STM > 4) {
+					extra = 14;
+				}
+				spiritTrackMarker.position.x = 195 + Math.abs(3 - data.STM) * 16 + extra;
+				spiritTrackMarker.position.y = 195 * (6 - data.STM) - 3;
+				for (var row in data.boardPieces) {
+					for (var tile in data.boardPieces[row]) {
+						drawUnit(row, tile, data.boardPieces[row][tile]);
+					}
+				}
+				jQuery('#player').text(data.currentPlayer);
+				jQuery('#step').text(data.currentStep);
+				sa.texture = PIXI.Texture.fromImage('res/SunArcher.png');
+				sh.texture = PIXI.Texture.fromImage('res/SunHorseman.png');
+				ss.texture = PIXI.Texture.fromImage('res/SunShieldbearer.png');
+				sw.texture = PIXI.Texture.fromImage('res/SunWarrior.png');
+				ma.texture = PIXI.Texture.fromImage('res/MoonArcher.png');
+				mh.texture = PIXI.Texture.fromImage('res/MoonHorseman.png');
+				ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearer.png');
+				mw.texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
+				normalize();
+				darken(data.fortified);
+				highlight(data.selectedS);
+				highlight(data.selectedM);
+				highlight(data.selected);
+				highlight(data.targeted);
+				if (data.currentStep !== "Deploy") {
+					jQuery('#endturn').val("Fortify and end turn");
+					if (data.currentPlayer !== data.army) {
+						jQuery('#endturn').prop('disabled',true);
+					} else {
+						jQuery('#endturn').prop('disabled',false);
+					}
+				}
+			});
+
+			function drawUnit(row, tile, unit) {
+				if (unit === '.') {
+					unitSprites[row][tile].texture = PIXI.Texture.EMPTY;
+				} else if (unit === 'A') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunArcher.png');
+				} else if (unit === 'H') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunHorseman.png');
+				} else if (unit === 'S') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunShieldbearer.png');
+				} else if (unit === 'W') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/SunWarrior.png');
+				} else if (unit === 'a') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonArcher.png');
+				} else if (unit === 'h') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonHorseman.png');
+				} else if (unit === 's') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonShieldbearer.png');
+				} else if (unit === 'w') {
+					unitSprites[row][tile].texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
+				}
+			}
+
+			function highlight(data) {
+				if (data[0] === "sa") {
+					sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
+				} else if (data[0] === "sh") {
+					sh.texture = PIXI.Texture.fromImage('res/SunHorsemanBright.png');
+				} else if (data[0] === "ss") {
+					ss.texture = PIXI.Texture.fromImage('res/SunShieldbearerBright.png');
+				} else if (data[0] === "sw") {
+					sw.texture = PIXI.Texture.fromImage('res/SunWarriorBright.png');
+				} else if (data[0] === "ma") {
+					ma.texture = PIXI.Texture.fromImage('res/MoonArcherBright.png');
+				} else if (data[0] === "mh") {
+					mh.texture = PIXI.Texture.fromImage('res/MoonHorsemanBright.png');
+				} else if (data[0] === "ms") {
+					ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
+				} else if (data[0] === "mw") {
+					mw.texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
+				} else if (data[0] === "A") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
+				} else if (data[0] === "H") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/SunHorsemanBright.png');
+				} else if (data[0] === "S") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/SunShieldbearerBright.png');
+				} else if (data[0] === "W") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/SunWarriorBright.png');
+				} else if (data[0] === "a") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonArcherBright.png');
+				} else if (data[0] === "h") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonHorsemanBright.png');
+				} else if (data[0] === "s") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
+				} else if (data[0] === "w") {
+					unitSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
+				}
+			}
+
+			function normalize() {
+				for (var row in unitSprites) {
+					for (var tile in unitSprites[row]) {
+						unitSprites[row][tile].tint = 0xFFFFFF;
+					}
+				}
+			}
+
+			function darken(data) {
+				if (data[0] !== null) {
+					unitSprites[data[1]][data[2]].tint = 0xCCCCCC;
+				}
+			}
+
+			function pushSTM() {
+				socketHandle.emit('pushSTM');
+			}
+
+			function selectIcon(strIcon) {
+				socketHandle.emit('selectIcon', {
+					'icon':strIcon
+				});
+			}
+
+			function tapBoard(row, tile) {
+				socketHandle.emit('tapBoard', {
+					'row':row,
+					'tile':tile
+				});
+			}
+
+			//End the turn when the end turn button is pressed
+			jQuery('#endturn').on('click', function() {
+					socketHandle.emit('endTurn');
+			}); 
+
+			//Chat
+			socketHandle.on('message', function(data) {
+				jQuery('#output')
+					.prepend(data.from + ': ' + data.message + '\n')
+				;
+			});
+
+			jQuery('#submit')
+				.on('click', function() {
+					socketHandle.emit('message', {
+						'to': 'everyone',
+						'message': jQuery('#message').val()
+					});
+					jQuery('#message').val('')
+				})
+			;
+		</script>
+	</body>
+</html>
