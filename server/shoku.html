@@ -52,6 +52,9 @@ Chat code based on an assignment by Simon Niklaus
 			<h3>Current Step</h3>
 			<h2 id="step">Deploy</h2>
 			<input id="endturn" type="button" value="Finish deployment">
+			<br>
+			<br>
+			<input id="reset" type="button" value="Reset the game">
 		</div>
 		<canvas id="board" class="floatl"></canvas>
 		<div id="chat" class="floatl sidebar chat">
@@ -404,6 +407,13 @@ Chat code based on an assignment by Simon Niklaus
 			//End the turn when the end turn button is pressed
 			jQuery('#endturn').on('click', function() {
 					socketHandle.emit('endTurn');
+			}); 
+
+
+			//Reset the game when the reset button is pressed
+			jQuery('#reset').on('click', function() {
+					console.log('reset called on client');
+					socketHandle.emit('resetGame');
 			}); 
 
 			//Chat
