@@ -408,8 +408,11 @@ Chat code based on an assignment by Simon Niklaus
 
 			//Chat
 			socketHandle.on('message', function(data) {
+				var div = document.createElement('div');
+				div.appendChild(document.createTextNode(data.message));
+				var escaped = div.innerHTML;
 				jQuery('#output')
-					.prepend(data.from + ': ' + data.message + '\n')
+					.prepend(data.from + ': ' + escaped + '\n')
 				;
 			});
 
