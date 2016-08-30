@@ -58,7 +58,7 @@ Chat code based on an assignment by Simon Niklaus
 		</div>
 		<canvas id="board" class="floatl"></canvas>
 		<div id="chat" class="floatl sidebar chat">
-			<h3>Chat:</h3>
+			<h3>Chat</h3>
 			<input id="message" type="text" placeholder="message">
 			<input id="submit" type="button" value="submit">
 			<br>
@@ -434,9 +434,19 @@ Chat code based on an assignment by Simon Niklaus
 						'to': 'everyone',
 						'message': jQuery('#message').val()
 					});
-					jQuery('#message').val('')
+					jQuery('#message').val('');
 				})
 			;
+
+			document.getElementById('message').addEventListener('keydown', function (e) {
+				if(e.keyCode == 13) {
+					socketHandle.emit('message', {
+                                               	'to': 'everyone',
+                                               	'message': jQuery('#message').val()
+                                       	});
+                                       	jQuery('#message').val('');
+				}
+			});
 		</script>
 	</body>
 </html>
