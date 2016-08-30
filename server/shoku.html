@@ -301,8 +301,6 @@ Chat code based on an assignment by Simon Niklaus
 				mw.texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
 				normalize();
 				darken(data.fortified);
-				highlight(data.selectedS);
-				highlight(data.selectedM);
 				highlight(data.selected);
 				highlight(data.targeted);
 				if (data.currentStep !== "Deploy") {
@@ -412,8 +410,9 @@ Chat code based on an assignment by Simon Niklaus
 
 			//Reset the game when the reset button is pressed
 			jQuery('#reset').on('click', function() {
-					console.log('reset called on client');
-					socketHandle.emit('resetGame');
+					if(confirm('Are you sure you want to reset?')) {
+						socketHandle.emit('resetGame');
+					}
 			}); 
 
 			//Chat

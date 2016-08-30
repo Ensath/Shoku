@@ -311,6 +311,31 @@ io.on('connection', function(socketHandle) {
 		update();
 	});
 
+	socketHandle.on('resetGame', function() {
+		STM = 3;
+		user = 0;
+		selectedS = [null, null, null];
+		selectedM = [null, null, null];
+		selected = [null, null, null];
+		targeted = [null, null, null];
+		marched = [];
+		fortified = [null, null, null];
+		boardPieces = [
+		['.','.','.','.','.','.'],
+		['.','.','.','.','.'],
+		['.','.','.','.','.','.'],
+		['.','.','.','.','.','.','.'],
+		['.','.','.','.','.','.'],
+		['.','.','.','.','.'],
+		['.','.','.','.','.','.']
+		];
+		currentPlayer = 'None';
+		currentStep = 'Deploy';
+		sunReady = false;
+		moonReady = false;
+		update();
+	});
+
 	socketHandle.on('disconnect', function() {
 		// remove the disconnected client from the objectClients variable
 		delete objectClients[socketHandle.id];
@@ -354,9 +379,7 @@ function update() {
 				}
 				objectClients[client].socket.emit('update', {
 					'STM':STM,
-					'selectedS':selectedS,
-					'selectedM':selectedM,
-					'selected':selected,
+					'selected':selectedS,
 					'targeted':targeted,
 					'fortified':fortified,
 					'boardPieces':sunDisplay,
@@ -385,9 +408,7 @@ function update() {
 				}
 				objectClients[client].socket.emit('update', {
 					'STM':STM,
-					'selectedS':selectedS,
-					'selectedM':selectedM,
-					'selected':selected,
+					'selected':selectedM,
 					'targeted':targeted,
 					'fortified':fortified,
 					'boardPieces':moonDisplay,
@@ -399,8 +420,6 @@ function update() {
 		} else {
 			objectClients[client].socket.emit('update', {
 				'STM':STM,
-				'selectedS':selectedS,
-				'selectedM':selectedM,
 				'selected':selected,
 				'targeted':targeted,
 				'fortified':fortified,
