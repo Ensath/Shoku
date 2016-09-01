@@ -11,7 +11,7 @@ Chat code based on an assignment by Simon Niklaus
 
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
 
-		<script type="text/javascript" src="http://localhost:8080/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="http://75.98.169.85:8080/socket.io/socket.io.js"></script>
 
 		<script type="text/javascript"src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.11/pixi.min.js"></script>
 
@@ -22,6 +22,17 @@ Chat code based on an assignment by Simon Niklaus
 		    background-color:#0F0E0C;
 		    color:white;
 		  }
+		  a {
+		    color:white;
+		  }
+		  pre {
+		    word-wrap: break-word;      /* IE 5.5-7 */
+		    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
+		    white-space: pre-wrap;      /* current browsers */
+		  }
+		  .logo {
+		    width: 240px;
+		  }
 		  .center {
 		    text-align: center;
 		  }
@@ -29,23 +40,36 @@ Chat code based on an assignment by Simon Niklaus
 		    float:left;
 		  }
 		  .sidebar {
-		    padding-left: 10px;
-		    padding-right: 10px;
+		    padding-left: 0px;
+		    padding-right: 0px;
+		  }
+		  .chat {
+		    width: 300px;
+		    max-width: 300px;
 		  }
 		</style>
 		<title>Shoku Online</title>
 	</head>
 	<body>
 		<div id="status" class="floatl center sidebar">
-			<img src='res/ShokuLogo.jpg'>
+			<img class="logo" src='res/ShokuLogo.jpg'>
 			<h3>Current Player</h3>
 			<h2 id="player">None</h2>
 			<h3>Current Step</h3>
 			<h2 id="step">Deploy</h2>
 			<input id="endturn" type="button" value="Finish deployment">
+			<br/>
+			<br/>
+			<input id="reset" type="button" value="Reset the game">
+			<br/>
+			<p>
+				<a href='http://noahfreed.com/shokurules.html' target='_blank'>Rules of the game</a>
+				<br/>
+				(opens in a new tab)
+			</p>
 		</div>
 		<canvas id="board" class="floatl"></canvas>
-		<div id="chat" class="floatl sidebar">
+		<div id="chat" class="floatl sidebar chat">
 			<h3>Chat</h3>
 			<input id="message" type="text" placeholder="message">
 			<input id="submit" type="button" value="submit">
@@ -239,8 +263,8 @@ Chat code based on an assignment by Simon Niklaus
 				if (availW < document.getElementById("status").offsetWidth) {
 					availW = document.getElementById("status").offsetWidth;
 				}
-				if (availW < 290) {
-					availW = 290;
+				if (availW < 425) {
+					availW = 425;
 				}
 			    if (availW / window.innerHeight >= ratio) {
 				var w = window.innerHeight * ratio;
@@ -255,7 +279,7 @@ Chat code based on an assignment by Simon Niklaus
 			window.onresize = resize;  
 
 			//Establish communication with the server
-			var socketHandle = io.connect('http://localhost:8080/');
+			var socketHandle = io.connect('http://75.98.169.85:8080/');
 
 			var strIdent = '';
 
@@ -279,18 +303,38 @@ Chat code based on an assignment by Simon Niklaus
 				}
 				jQuery('#player').text(data.currentPlayer);
 				jQuery('#step').text(data.currentStep);
-				sa.texture = PIXI.Texture.fromImage('res/SunArcher.png');
-				sh.texture = PIXI.Texture.fromImage('res/SunHorseman.png');
-				ss.texture = PIXI.Texture.fromImage('res/SunShieldbearer.png');
-				sw.texture = PIXI.Texture.fromImage('res/SunWarrior.png');
-				ma.texture = PIXI.Texture.fromImage('res/MoonArcher.png');
-				mh.texture = PIXI.Texture.fromImage('res/MoonHorseman.png');
-				ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearer.png');
-				mw.texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
+				if (data.currentStep === 'Deploy' || (data.currentStep === 'Rearm and Pray' && data.army === data.currentPlayer)) {
+					if (data.army === 'Sun') {
+						sa.texture = PIXI.Texture.fromImage('res/SunArcher.png');
+						sh.texture = PIXI.Texture.fromImage('res/SunHorseman.png');
+						ss.texture = PIXI.Texture.fromImage('res/SunShieldbearer.png');
+						sw.texture = PIXI.Texture.fromImage('res/SunWarrior.png');
+						ma.texture = PIXI.Texture.EMPTY;
+						mh.texture = PIXI.Texture.EMPTY;
+						ms.texture = PIXI.Texture.EMPTY;
+						mw.texture = PIXI.Texture.EMPTY;
+					} else {
+						sa.texture = PIXI.Texture.EMPTY;
+						sh.texture = PIXI.Texture.EMPTY;
+						ss.texture = PIXI.Texture.EMPTY;
+						sw.texture = PIXI.Texture.EMPTY;
+						ma.texture = PIXI.Texture.fromImage('res/MoonArcher.png');
+						mh.texture = PIXI.Texture.fromImage('res/MoonHorseman.png');
+						ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearer.png');
+						mw.texture = PIXI.Texture.fromImage('res/MoonWarrior.png');
+					}
+				} else {
+						sa.texture = PIXI.Texture.EMPTY;
+						sh.texture = PIXI.Texture.EMPTY;
+						ss.texture = PIXI.Texture.EMPTY;
+						sw.texture = PIXI.Texture.EMPTY;
+						ma.texture = PIXI.Texture.EMPTY;
+						mh.texture = PIXI.Texture.EMPTY;
+						ms.texture = PIXI.Texture.EMPTY;
+						mw.texture = PIXI.Texture.EMPTY;
+				}
 				normalize();
 				darken(data.fortified);
-				highlight(data.selectedS);
-				highlight(data.selectedM);
 				highlight(data.selected);
 				highlight(data.targeted);
 				if (data.currentStep !== "Deploy") {
@@ -300,6 +344,9 @@ Chat code based on an assignment by Simon Niklaus
 					} else {
 						jQuery('#endturn').prop('disabled',false);
 					}
+				} else {
+					jQuery('#endturn').val("Finish deployment");
+					jQuery('#endturn').prop('disabled',false);
 				}
 			});
 
@@ -397,10 +444,21 @@ Chat code based on an assignment by Simon Niklaus
 					socketHandle.emit('endTurn');
 			}); 
 
+
+			//Reset the game when the reset button is pressed
+			jQuery('#reset').on('click', function() {
+					if(confirm('Are you sure you want to reset?')) {
+						socketHandle.emit('resetGame');
+					}
+			}); 
+
 			//Chat
 			socketHandle.on('message', function(data) {
+				var div = document.createElement('div');
+				div.appendChild(document.createTextNode(data.message));
+				var escaped = div.innerHTML;
 				jQuery('#output')
-					.prepend(data.from + ': ' + data.message + '\n')
+					.prepend(data.from + ': ' + escaped + '\n')
 				;
 			});
 
@@ -410,9 +468,19 @@ Chat code based on an assignment by Simon Niklaus
 						'to': 'everyone',
 						'message': jQuery('#message').val()
 					});
-					jQuery('#message').val('')
+					jQuery('#message').val('');
 				})
 			;
+
+			document.getElementById('message').addEventListener('keydown', function (e) {
+				if(e.keyCode == 13) {
+					socketHandle.emit('message', {
+                                               	'to': 'everyone',
+                                               	'message': jQuery('#message').val()
+                                       	});
+                                       	jQuery('#message').val('');
+				}
+			});
 		</script>
 	</body>
 </html>

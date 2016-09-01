@@ -312,7 +312,6 @@ io.on('connection', function(socketHandle) {
 	});
 
 	socketHandle.on('resetGame', function() {
-		console.log('Reset called on server');
 		STM = 3;
 		user = 0;
 		selectedS = [null, null, null];
@@ -380,9 +379,7 @@ function update() {
 				}
 				objectClients[client].socket.emit('update', {
 					'STM':STM,
-					'selectedS':selectedS,
-					'selectedM':selectedM,
-					'selected'selected,
+					'selected':selectedS,
 					'targeted':targeted,
 					'fortified':fortified,
 					'boardPieces':sunDisplay,
@@ -411,9 +408,7 @@ function update() {
 				}
 				objectClients[client].socket.emit('update', {
 					'STM':STM,
-					'selectedS':selectedS,
-					'selectedM':selectedM,
-					'selected'selected,
+					'selected':selectedM,
 					'targeted':targeted,
 					'fortified':fortified,
 					'boardPieces':moonDisplay,
@@ -425,9 +420,7 @@ function update() {
 		} else {
 			objectClients[client].socket.emit('update', {
 				'STM':STM,
-				'selectedS':selectedS,
-				'selectedM':selectedM,
-				'selected'selected,
+				'selected':selected,
 				'targeted':targeted,
 				'fortified':fortified,
 				'boardPieces':boardPieces,
