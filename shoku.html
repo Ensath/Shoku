@@ -97,7 +97,7 @@ Chat code based on an assignment by Simon Niklaus
 			var moonIcons = [ma, mh, ms, mw];
 			var spiritTrackMarker = new PIXI.Sprite(PIXI.Texture.fromImage('res/SpiritTrackMarker.png'));
 
-			//Initialize the remaining textures	
+			//Initialize the remaining textures, then hide them	
 			sa.texture = PIXI.Texture.fromImage('res/SunArcherBright.png');
 			sh.texture = PIXI.Texture.fromImage('res/SunHorsemanBright.png');
 			ss.texture = PIXI.Texture.fromImage('res/SunShieldbearerBright.png');
@@ -106,6 +106,14 @@ Chat code based on an assignment by Simon Niklaus
 			mh.texture = PIXI.Texture.fromImage('res/MoonHorsemanBright.png');
 			ms.texture = PIXI.Texture.fromImage('res/MoonShieldbearerBright.png');
 			mw.texture = PIXI.Texture.fromImage('res/MoonWarriorBright.png');
+			sa.texture = PIXI.Texture.EMPTY;
+			sh.texture = PIXI.Texture.EMPTY;
+			ss.texture = PIXI.Texture.EMPTY;
+			sw.texture = PIXI.Texture.EMPTY;
+			ma.texture = PIXI.Texture.EMPTY;
+			mh.texture = PIXI.Texture.EMPTY;
+			ms.texture = PIXI.Texture.EMPTY;
+			mw.texture = PIXI.Texture.EMPTY;
 
 			//Draw the game elements
 			pixiStage.addChild(pixiBoard);
