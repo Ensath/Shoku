@@ -141,6 +141,24 @@ Chat code based on an assignment by Simon Niklaus
 			pixiStage.addChild(spiritTrackMarker);
 			spiritTrackMarker.position.x = 195;
 			spiritTrackMarker.position.y = 581;
+			var borderSprites = [
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.'],
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.','.','.'],
+			['.','.','.','.','.','.'],
+			['.','.','.','.','.'],
+			['.','.','.','.','.','.']
+			];
+			for (var row in borderSprites) {
+				for (var tile in borderSprites[row]) {
+					var newUnit =  new PIXI.Sprite(PIXI.Texture.EMPTY);
+					pixiStage.addChild(newUnit);
+					newUnit.position.x = 518 + row * 136;
+					newUnit.position.y = (5 - tile) * 157 + 204 + (row%2) * -78.5 + Math.max(0, (row%4 - 2)) * 157; 
+					borderSprites[row][tile] = newUnit;
+				}
+			}
 			var unitSprites = [
 			['.','.','.','.','.','.'],
 			['.','.','.','.','.'],
@@ -420,6 +438,7 @@ Chat code based on an assignment by Simon Niklaus
 				for (var row in unitSprites) {
 					for (var tile in unitSprites[row]) {
 						unitSprites[row][tile].tint = 0xFFFFFF;
+						borderSprites[row][tile].texture = PIXI.Texture.EMPTY;
 					}
 				}
 			}
@@ -427,6 +446,7 @@ Chat code based on an assignment by Simon Niklaus
 			function darken(data) {
 				if (data[0] !== null) {
 					unitSprites[data[1]][data[2]].tint = 0xCCCCCC;
+					borderSprites[data[1]][data[2]].texture = PIXI.Texture.fromImage('res/Border.png');
 				}
 			}
 
