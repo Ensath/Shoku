@@ -218,6 +218,8 @@ io.on('connection', function(socketHandle) {
 					boardPieces[data.row][data.tile] = 'S';
 				} else if (selectedS[0] === 'sw' && countUnit('W') < 3) {
 					boardPieces[data.row][data.tile] = 'W';
+				} else {
+					boardPieces[data.row][data.tile] = '.';
 				}
 			} else { 
 				if (data.tile < 4 || ((data.row === 3) && data.tile < 5)) {
@@ -231,6 +233,8 @@ io.on('connection', function(socketHandle) {
 					boardPieces[data.row][data.tile] = 's';
 				} else if (selectedM[0] === 'mw' && countUnit('w') < 3) {
 					boardPieces[data.row][data.tile] = 'w';
+				} else {
+					boardPieces[data.row][data.tile] = '.';
 				}
 			} 
 		} else if (currentStep === 'March' && currentPlayer === objectClients[socketHandle.id].army) {
